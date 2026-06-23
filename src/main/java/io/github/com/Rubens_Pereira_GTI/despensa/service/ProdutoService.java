@@ -31,7 +31,7 @@ public class ProdutoService {
         return produto;
     }
 
-
+    /*
     public ProdutoResponseDTO criaProduto(@RequestBody ProdutoRequestDTO produtoRequestDTO) {
 
         // TODO converter o dto em produto
@@ -40,4 +40,6 @@ public class ProdutoService {
 
         return produtoResponseDTO;
     }
+    
+     */
 }
