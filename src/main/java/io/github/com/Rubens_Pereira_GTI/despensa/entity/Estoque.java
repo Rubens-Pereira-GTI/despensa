@@ -3,7 +3,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table
+@Table(schema = "social", name = "estoque")
 public class Estoque {
 
     //TODO [Reverse Engineering] generate columns from DB

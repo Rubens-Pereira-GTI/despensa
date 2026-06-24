@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table
+@Table(schema = "social", name = "unidade_medida")
 public class UnidadeMedida {
 
     @Id

@@ -1,11 +1,9 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(schema = "social", name = "local")
 public class Local {
 
     @Id

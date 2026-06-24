@@ -28,7 +28,7 @@ public class Produto {
     private LocalDateTime dataDeCriacao;
 
     @Column(name = "data_atualizacao", nullable = false, updatable = false)
-    private LocalDateTime dataDeAtualizacao;
+    private LocalDateTime dataAtualizacao;
 
     //@JsonIgnore
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
@@ -38,18 +38,33 @@ public class Produto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    @Transient
+    private Long categoriaId;
+
     @ManyToOne
     @JoinColumn(name = "unidade_medida_id")
     private UnidadeMedida unidadeMedida;
 
     @Transient
-    private Local local;
+    private Long unidadeMedidaId;
+
 
     @Transient
     private Long localId;
 
     @Transient
     private String localizacao;
+
+    @PrePersist
+    protected void onCreate(){
+        dataDeCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate(){
+        dataAtualizacao = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -116,11 +131,11 @@ public class Produto {
     }
 
     public LocalDateTime getDataDeAtualizacao() {
-        return dataDeAtualizacao;
+        return dataAtualizacao;
     }
 
     public void setDataDeAtualizacao(LocalDateTime dataDeAtualizacao) {
-        this.dataDeAtualizacao = dataDeAtualizacao;
+        this.dataAtualizacao = dataDeAtualizacao;
     }
 
     public List<Estoque> getEstoques() {
@@ -131,13 +146,6 @@ public class Produto {
         this.estoques = estoques;
     }
 
-    public Local getLocal() {
-        return local;
-    }
-
-    public void setLocal(Local local) {
-        this.local = local;
-    }
 
     public Long getLocalId() {
         return localId;
@@ -153,5 +161,21 @@ public class Produto {
 
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
+    }
+
+    public Long getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(Long categoriaId) {
+        this.categoriaId = categoriaId;
+    }
+
+    public Long getUnidadeMedidaId() {
+        return unidadeMedidaId;
+    }
+
+    public void setUnidadeMedidaId(Long unidadeMedidaId) {
+        this.unidadeMedidaId = unidadeMedidaId;
     }
 }

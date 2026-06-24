@@ -1,12 +1,14 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
+import io.github.com.Rubens_Pereira_GTI.despensa.converter.ProdutoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoRequestDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.mappers.response.ProdutoResponseDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponseDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
+import io.github.com.Rubens_Pereira_GTI.despensa.converter.ProdutoDtoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -14,9 +16,17 @@ import java.util.Optional;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final ProdutoDtoConverter produtoDtoConverter;
+    private final ProdutoConverter produtoToResponseDTO;
 
-    public ProdutoService(ProdutoRepository produtoRepository){
+    @Autowired
+    private ConversionService conversionService;
+
+    public ProdutoService(ProdutoRepository produtoRepository, ProdutoDtoConverter produtoDtoConverter, ProdutoConverter produtoToResponseDTO){
         this.produtoRepository = produtoRepository;
+        this.produtoDtoConverter = produtoDtoConverter;
+        this.produtoToResponseDTO = produtoToResponseDTO;
+
     }
 
     public Produto encontraProdutoPorId(Long id)  {
@@ -28,18 +38,19 @@ public class ProdutoService {
         }else {
             throw  new RuntimeException("Produto não encontrado, id do produto: "+ id);
         }
+
         return produto;
     }
 
-    /*
-    public ProdutoResponseDTO criaProduto(@RequestBody ProdutoRequestDTO produtoRequestDTO) {
+    public ProdutoResponseDTO salvarProduto(ProdutoRequestDTO produtoRequestDTO) {
 
-        // TODO converter o dto em produto
+        //@Valid na camada Controller vai verificar se o DTO é null
 
-        ProdutoResponseDTO produtoResponseDTO = produtoRepository.save(produto);
+        Produto produto = produtoDtoConverter.convert(produtoRequestDTO);
 
-        return produtoResponseDTO;
+        produto = produtoRepository.save(produto);
+
+        return produtoToResponseDTO.convert(produto);
     }
 
-     */
 }
