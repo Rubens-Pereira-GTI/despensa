@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -36,6 +37,7 @@ public class Produto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
+    @JsonIgnoreProperties("listaProdutos")
     private Categoria categoria;
 
     @Transient
@@ -43,6 +45,7 @@ public class Produto {
 
     @ManyToOne
     @JoinColumn(name = "unidade_medida_id")
+    @JsonIgnoreProperties("listaProdutos")
     private UnidadeMedida unidadeMedida;
 
     @Transient

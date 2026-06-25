@@ -17,6 +17,7 @@ public class ProdutoDtoConverter implements Converter<ProdutoRequestDTO, Produto
 
         // 4. Instanciação e mapeamento manual dos campos
         Produto produto = new Produto();
+        produto.setId(produtoRequestDTO.id());
         produto.setNome(produtoRequestDTO.nome());
         produto.setDescricao(produtoRequestDTO.descricao());
         produto.setLocalizacao(produtoRequestDTO.localizacao());

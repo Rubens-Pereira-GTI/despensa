@@ -8,6 +8,7 @@ SET SCHEMA social;
 CREATE TABLE categoria (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL
+
 );
 
 -- Tabela UnidadeMedida

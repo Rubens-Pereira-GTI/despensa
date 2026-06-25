@@ -17,19 +17,19 @@ public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
     private final ProdutoDtoConverter produtoDtoConverter;
-    private final ProdutoConverter produtoToResponseDTO;
+    private final ProdutoConverter produtoConverter;
 
     @Autowired
     private ConversionService conversionService;
 
-    public ProdutoService(ProdutoRepository produtoRepository, ProdutoDtoConverter produtoDtoConverter, ProdutoConverter produtoToResponseDTO){
+    public ProdutoService(ProdutoRepository produtoRepository, ProdutoDtoConverter produtoDtoConverter, ProdutoConverter produtoConverter){
         this.produtoRepository = produtoRepository;
         this.produtoDtoConverter = produtoDtoConverter;
-        this.produtoToResponseDTO = produtoToResponseDTO;
+        this.produtoConverter = produtoConverter;
 
     }
 
-    public Produto encontraProdutoPorId(Long id)  {
+    public ProdutoResponseDTO encontraProdutoPorId(Long id)  {
         Produto produto = null;
         Optional<Produto> produtoOpt = produtoRepository.findById(id);
 
@@ -39,18 +39,23 @@ public class ProdutoService {
             throw  new RuntimeException("Produto não encontrado, id do produto: "+ id);
         }
 
-        return produto;
+        return produtoConverter.convert(produto);
     }
 
     public ProdutoResponseDTO salvarProduto(ProdutoRequestDTO produtoRequestDTO) {
-
         //@Valid na camada Controller vai verificar se o DTO é null
-
         Produto produto = produtoDtoConverter.convert(produtoRequestDTO);
-
         produto = produtoRepository.save(produto);
-
-        return produtoToResponseDTO.convert(produto);
+        return produtoConverter.convert(produto);
     }
 
+    public ProdutoResponseDTO alterarProduto(ProdutoRequestDTO dto) {
+        Produto produto = produtoDtoConverter.convert(dto);
+        Optional<Produto> produtoOpt = produtoRepository.findById(produto.getId());
+        if(produtoOpt.isEmpty()){
+            throw new RuntimeException("Produto não encontrado com o ID informado.");
+        }
+        produto = produtoRepository.save(produto);
+        return produtoConverter.convert(produto);
+    }
 }
