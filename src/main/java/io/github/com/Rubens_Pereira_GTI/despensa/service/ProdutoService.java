@@ -6,6 +6,7 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.ProdutoDtoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,13 @@ public class ProdutoService {
     public ProdutoResponseDTO salvarProduto(ProdutoRequestDTO produtoRequestDTO) {
         //@Valid na camada Controller vai verificar se o DTO é null
         Produto produto = produtoDtoConverter.convert(produtoRequestDTO);
+        System.out.println("UNIDADE DE MEDIDA!!!!!"+produto.getCategoriaId());
+
         produto = produtoRepository.save(produto);
         return produtoConverter.convert(produto);
     }
 
+    
     public ProdutoResponseDTO alterarProduto(ProdutoRequestDTO dto) {
         Produto produto = produtoDtoConverter.convert(dto);
         Optional<Produto> produtoOpt = produtoRepository.findById(produto.getId());

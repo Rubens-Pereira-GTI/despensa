@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +43,7 @@ public class UnidadeMedida {
 
     //@JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("unidadeMedida")
     private List<Produto> listaProdutos;
 
     public Long getId() {

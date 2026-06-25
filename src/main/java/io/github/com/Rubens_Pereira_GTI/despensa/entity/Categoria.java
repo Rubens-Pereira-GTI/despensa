@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Categoria {
     private String nome;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
+    @JsonIgnoreProperties("categoria")
     private List<Produto> listaProdutos;
 
     public Long getId() {

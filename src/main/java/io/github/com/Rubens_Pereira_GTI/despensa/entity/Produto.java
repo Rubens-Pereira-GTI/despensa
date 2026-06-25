@@ -37,7 +37,6 @@ public class Produto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
-    @JsonIgnoreProperties("listaProdutos")
     private Categoria categoria;
 
     @Transient
@@ -45,7 +44,6 @@ public class Produto {
 
     @ManyToOne
     @JoinColumn(name = "unidade_medida_id")
-    @JsonIgnoreProperties("listaProdutos")
     private UnidadeMedida unidadeMedida;
 
     @Transient
