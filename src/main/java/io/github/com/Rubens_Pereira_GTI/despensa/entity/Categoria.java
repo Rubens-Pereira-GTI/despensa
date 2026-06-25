@@ -16,8 +16,8 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
-    @JsonIgnoreProperties("categoria")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoriaId")
+    //@JsonIgnoreProperties("categoria")
     private List<Produto> listaProdutos;
 
     public Long getId() {

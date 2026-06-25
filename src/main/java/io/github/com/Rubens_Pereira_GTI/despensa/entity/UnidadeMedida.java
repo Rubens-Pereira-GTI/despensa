@@ -43,7 +43,7 @@ public class UnidadeMedida {
 
     //@JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("unidadeMedida")
+    //@JsonIgnoreProperties("unidadeMedida")
     private List<Produto> listaProdutos;
 
     public Long getId() {
