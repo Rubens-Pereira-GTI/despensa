@@ -2,6 +2,9 @@
 
 -- Categoria
 INSERT INTO social.categoria (nome) VALUES ('Alimentos');
+INSERT INTO social.categoria (nome) VALUES ('Bebidas');
+INSERT INTO social.categoria (nome) VALUES ('Limpeza');
+INSERT INTO social.categoria (nome) VALUES ('Higiene');
 
 -- Unidade de Medida
 INSERT INTO social.unidade_medida (nome, sigla, descricao, ativo, data_criacao, data_atualizacao)
