@@ -11,10 +11,6 @@ public class ProdutoDtoConverter implements Converter<ProdutoRequestDTO, Produto
     @Override
     public Produto convert(ProdutoRequestDTO produtoRequestDTO) {
 
-        if (produtoRequestDTO == null) {
-            return null;
-        }
-
         // 4. Instanciação e mapeamento manual dos campos
         Produto produto = new Produto();
         produto.setId(produtoRequestDTO.id());
@@ -23,7 +19,6 @@ public class ProdutoDtoConverter implements Converter<ProdutoRequestDTO, Produto
         produto.setLocalizacao(produtoRequestDTO.localizacao());
         produto.setEstoqueMinimo(produtoRequestDTO.estoqueMinimo());
         produto.setAtivo(produtoRequestDTO.ativo());
-        produto.setCategoriaId(produtoRequestDTO.categoriaId());
         produto.setCategoriaId(produtoRequestDTO.categoriaId());
         produto.setUnidadeMedidaId(produtoRequestDTO.unidadeMedidaId());
         produto.setLocalId(produtoRequestDTO.localId());

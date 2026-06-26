@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -92,6 +94,16 @@ public class ProdutoService {
 
         produto = produtoRepository.save(produto);
         return produtoConverter.convert(produto);
+    }
+
+    public Page<ProdutoResponseDTO> listarProdutos(Pageable pageable) {
+        Page<Produto> produtosPage = produtoRepository.findAll(pageable);
+
+        if (produtosPage.isEmpty()) {
+            throw new RuntimeException("Página vazia");
+        }
+
+        return produtosPage.map(produtoConverter::convert);
     }
 
     public void deletaProduto(Long id) {

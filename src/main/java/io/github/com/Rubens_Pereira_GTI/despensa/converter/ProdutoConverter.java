@@ -11,10 +11,6 @@ public class ProdutoConverter implements Converter<Produto, ProdutoResponseDTO> 
     @Override
     public ProdutoResponseDTO convert(Produto source) {
 
-        if (source == null) {
-            return null;
-        }
-
         ProdutoResponseDTO responseDTO = new ProdutoResponseDTO(
                 source.getId(),
                 source.getNome(),
@@ -35,4 +31,6 @@ public class ProdutoConverter implements Converter<Produto, ProdutoResponseDTO> 
 
         return responseDTO;
     }
+
+
 }
