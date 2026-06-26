@@ -19,7 +19,6 @@ public class ProdutoController {
     public ProdutoController(ProdutoService produtoService){
         this. produtoService = produtoService;
     }
-
     
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> salvarProduto(@Valid @RequestBody ProdutoRequestDTO dto){
@@ -36,14 +35,13 @@ public class ProdutoController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> encontraProdutoPorId(@Valid @PathVariable Long id){
         ProdutoResponseDTO produto = produtoService.encontraProdutoPorId(id);
         return ResponseEntity.ok(produto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> deletaProduto(@Valid @PathVariable Long id){
         ProdutoResponseDTO response = produtoService.deletaProduto(id);
         return ResponseEntity.ok(response);
