@@ -10,14 +10,11 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -110,5 +107,11 @@ public class ProdutoService {
         //checa se o produto existe
         Optional<Produto>produtoOpt = produtoRepository.findById(id);
         if(produtoOpt.isPresent()) produtoRepository.deleteById(id);
+    }
+
+    public List<ProdutoResponseDTO> listarTodosProdutos() {
+        List<Produto> produtos = produtoRepository.findAll();
+
+        return produtos.stream().map(produtoConverter::convert).toList();
     }
 }

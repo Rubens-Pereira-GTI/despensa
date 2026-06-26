@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/produto")
 public class ProdutoController {
@@ -19,13 +21,6 @@ public class ProdutoController {
 
     public ProdutoController(ProdutoService produtoService){
         this.produtoService = produtoService;
-    }
-
-    @GetMapping("/paginado")
-    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutosPaginado(
-            @PageableDefault(size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<ProdutoResponseDTO> produtos = produtoService.listarProdutos(pageable);
-        return ResponseEntity.ok(produtos);
     }
 
     @PostMapping
@@ -44,6 +39,19 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponseDTO> encontraProdutoPorId(@PathVariable Long id){
         ProdutoResponseDTO produto = produtoService.encontraProdutoPorId(id);
         return ResponseEntity.ok(produto);
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutosPaginado(
+            @PageableDefault(size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<ProdutoResponseDTO> produtos = produtoService.listarProdutos(pageable);
+        return ResponseEntity.ok(produtos);
+    }
+
+    @GetMapping("/TodosProdutos")
+    public ResponseEntity<List<ProdutoResponseDTO>> todosProdutos(){
+        List<ProdutoResponseDTO> produtos = produtoService.listarTodosProdutos();
+        return ResponseEntity.ok(produtos);
     }
 
     @DeleteMapping("/{id}")
