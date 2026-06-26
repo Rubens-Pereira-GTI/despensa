@@ -20,24 +20,24 @@ import java.util.Optional;
 @Service
 public class ProdutoService {
 
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private UnidadeMedidaRepository unidadeMedidaRepository;
 
     private final ProdutoRepository produtoRepository;
     private final ProdutoDtoConverter produtoDtoConverter;
     private final ProdutoConverter produtoConverter;
+    private final UnidadeMedidaRepository unidadeMedidaRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    @Autowired
-    private ConversionService conversionService;
+    public ProdutoService(ProdutoRepository produtoRepository,
+                          ProdutoDtoConverter produtoDtoConverter,
+                          ProdutoConverter produtoConverter,
+                          CategoriaRepository categoriaRepository,
+                          UnidadeMedidaRepository unidadeMedidaRepository){
 
-    public ProdutoService(ProdutoRepository produtoRepository, ProdutoDtoConverter produtoDtoConverter, ProdutoConverter produtoConverter){
         this.produtoRepository = produtoRepository;
         this.produtoDtoConverter = produtoDtoConverter;
         this.produtoConverter = produtoConverter;
-
+        this.unidadeMedidaRepository = unidadeMedidaRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public ProdutoResponseDTO encontraProdutoPorId(Long id)  {
