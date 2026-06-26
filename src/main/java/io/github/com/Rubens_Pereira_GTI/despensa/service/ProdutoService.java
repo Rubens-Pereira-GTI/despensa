@@ -94,11 +94,9 @@ public class ProdutoService {
         return produtoConverter.convert(produto);
     }
 
-    public ProdutoResponseDTO deletaProduto(Long id) {
-        Optional<Produto>produtoOpt = produtoRepository.findById(id);
+    public void deletaProduto(Long id) {
         //checa se o produto existe
+        Optional<Produto>produtoOpt = produtoRepository.findById(id);
         if(produtoOpt.isPresent()) produtoRepository.deleteById(id);
-
-        return produtoConverter.convert(produtoOpt.get());
     }
 }
