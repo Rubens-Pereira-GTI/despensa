@@ -48,7 +48,7 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
 
-    @GetMapping("/TodosProdutos")
+    @GetMapping("/todosProdutos")
     public ResponseEntity<List<ProdutoResponseDTO>> todosProdutos(){
         List<ProdutoResponseDTO> produtos = produtoService.listarTodosProdutos();
         return ResponseEntity.ok(produtos);

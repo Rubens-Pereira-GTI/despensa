@@ -16,9 +16,15 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoriaId")
-    //@JsonIgnoreProperties("categoria")
-    private List<Produto> listaProdutos;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
+    private List<Produto> produtos;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "local_id")
+    private Local local;
+
+    @Transient
+    private Long localId;
 
     public Long getId() {
         return id;
@@ -36,11 +42,27 @@ public class Categoria {
         this.nome = nome;
     }
 
-    public List<Produto> getListaProdutos() {
-        return listaProdutos;
+    public List<Produto> getProdutos() {
+        return produtos;
     }
 
-    public void setListaProdutos(List<Produto> listaProdutos) {
-        this.listaProdutos = listaProdutos;
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public Local getLocal() {
+        return local;
+    }
+
+    public void setLocal(Local local) {
+        this.local = local;
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 }

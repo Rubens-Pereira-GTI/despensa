@@ -35,28 +35,23 @@ public class Produto {
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
     private List<Estoque> estoques;
 
-    //@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    //@JoinColumn(name = "categoria_id")
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    //@Transient
-    @Column(name = "categoria_id")
+    @Transient
     private Long categoriaId;
 
-    @ManyToOne
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unidade_medida_id")
     private UnidadeMedida unidadeMedida;
 
-    //@Transient
-    @Column(name = "unidade_medida_id")
+    @Transient
     private Long unidadeMedidaId;
-
 
     @Transient
     private Long localId;
 
-    @Transient
     private String localizacao;
 
     @PrePersist
@@ -167,12 +162,19 @@ public class Produto {
         this.localizacao = localizacao;
     }
 
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
     public Long getCategoriaId() {
         return categoriaId;
     }
 
     public void setCategoriaId(Long categoriaId) {
-        //this.categoria = getCategoria();
         this.categoriaId = categoriaId;
     }
 

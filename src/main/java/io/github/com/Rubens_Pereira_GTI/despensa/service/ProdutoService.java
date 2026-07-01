@@ -13,6 +13,7 @@ import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaReposit
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,16 +41,21 @@ public class ProdutoService {
         this.categoriaRepository = categoriaRepository;
     }
 
+
+    @Transactional(readOnly = true)
     public ProdutoResponseDTO encontraProdutoPorId(Long id)  {
         Produto produto = null;
-        Optional<Produto> produtoOpt = produtoRepository.findById(id);
 
+        Optional<Produto> produtoOpt = produtoRepository.findById(id);
         if(produtoOpt.isPresent()){
             produto = produtoOpt.get();
+            produto.setCategoriaId(produto.getCategoria().getId());
+            produto.setUnidadeMedidaId(produto.getUnidadeMedida().getId());
+            produto.setLocalId(produto.getCategoria().getLocal().getId());
+
         }else {
             throw  new RuntimeException("Produto não encontrado, id do produto: "+ id);
         }
-
         return produtoConverter.convert(produto);
     }
 
@@ -57,7 +63,6 @@ public class ProdutoService {
 
         Produto produto = produtoDtoConverter.convert(produtoRequestDTO);
 
-        //verifica se os relacionamentos existem
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(produto.getCategoriaId());
         Optional<UnidadeMedida> unidadeMedidaOpt = unidadeMedidaRepository.findById(produto.getUnidadeMedidaId());
         if(categoriaOpt.isEmpty() ){
@@ -73,6 +78,7 @@ public class ProdutoService {
 
     public ProdutoResponseDTO alterarProduto(ProdutoRequestDTO dto) {
         Produto produto = produtoDtoConverter.convert(dto);
+
         Optional<Produto> produtoOpt = produtoRepository.findById(produto.getId());
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(produto.getCategoriaId());
         Optional<UnidadeMedida> unidadeMedidaOpt = unidadeMedidaRepository.findById(produto.getUnidadeMedidaId());
