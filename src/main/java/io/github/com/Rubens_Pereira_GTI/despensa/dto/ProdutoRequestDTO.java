@@ -29,7 +29,10 @@ public record ProdutoRequestDTO(
         @NotNull(message = "A unidade de medida é obrigatória.")
         Long unidadeMedidaId,
 
+        @NotNull(message = "campo localId obrigatorio")
         Long localId,
+
+        @Size(max = 100)
         String localizacao
 
 ) {

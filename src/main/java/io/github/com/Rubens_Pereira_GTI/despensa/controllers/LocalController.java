@@ -27,7 +27,7 @@ public class LocalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Local> findLocalById(@PathVariable Long id){
+    public ResponseEntity<LocalResponseDto> findLocalById(@PathVariable Long id){
         return ResponseEntity.ok(localService.findById(id));
     }
 

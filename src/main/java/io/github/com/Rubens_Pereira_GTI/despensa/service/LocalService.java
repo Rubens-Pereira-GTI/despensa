@@ -1,13 +1,12 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.LocalConverter;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalRequestDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
+import org.hibernate.engine.spi.Resolution;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +25,17 @@ public class LocalService {
     }
 
     @Transactional(readOnly = true)
-    public Local findById(Long id){
+    public LocalResponseDto findById(Long id){
         Optional<Local> localOpt = localRepository.findById(id);
 
         if(localOpt.isEmpty()) throw new RuntimeException("Local não encontrado");
 
-        return localOpt.get() ;
+        LocalResponseDto responseDto = localConverter.convert(localOpt.get());
+
+        return responseDto ;
     }
 
+    @Transactional(readOnly = true)
     public List<LocalResponseDto> findAll(){
         List<Local> local = localRepository.findAll();
 
@@ -42,12 +44,12 @@ public class LocalService {
         return responseDto;
     }
 
-    public Page<Local> buscaPaginada(Pageable pageable){
+    public Page<LocalResponseDto> buscaPaginada(Pageable pageable){
         Page<Local> pagina = localRepository.findAll(pageable);
 
         Page<LocalResponseDto> responseDto = pagina.map(localConverter::convert);
 
-        return pagina;
+        return responseDto;
     }
 
     public LocalResponseDto salvarLocal(Local local){
