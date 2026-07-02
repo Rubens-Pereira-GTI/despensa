@@ -23,4 +23,5 @@ public class LocalController {
     public ResponseEntity<Local> findLocalById(@PathVariable Long id){
         return ResponseEntity.ok(localService.findById(id));
     }
+
 }

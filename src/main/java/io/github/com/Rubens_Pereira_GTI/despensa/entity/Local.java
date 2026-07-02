@@ -1,8 +1,8 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,16 +13,18 @@ public class Local {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Size(max = 100)
     private String nome;
 
+    @Size(max = 255)
     private String descricao;
 
     private Boolean ativo;
 
-    private String dsSiglaAtividade;
-
+    @Column(name = "data_criacao" )
     private LocalDateTime dataCriacao;
 
+    @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
     public Long getId() {
@@ -55,14 +57,6 @@ public class Local {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public String getDsSiglaAtividade() {
-        return dsSiglaAtividade;
-    }
-
-    public void setDsSiglaAtividade(String dsSiglaAtividade) {
-        this.dsSiglaAtividade = dsSiglaAtividade;
     }
 
     public LocalDateTime getDataCriacao() {

@@ -28,7 +28,6 @@ public record ProdutoRequestDTO(
         @NotNull(message = "A unidade de medida é obrigatória.")
         Long unidadeMedidaId,
 
-        // Incluindo os campos transientes que sua API parece receber/tratar
         Long localId,
         String localizacao
 ) {
