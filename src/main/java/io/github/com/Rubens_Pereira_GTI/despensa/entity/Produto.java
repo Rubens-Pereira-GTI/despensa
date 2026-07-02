@@ -3,6 +3,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Produto {
     private String descricao;
 
     @Column(name = "estoque_minimo", precision = 10, scale = 2)
+    @PositiveOrZero(message = "O campo estoque minimo deve ser 0 ou positivo")
     private BigDecimal estoqueMinimo;
 
     @Column(nullable = false)

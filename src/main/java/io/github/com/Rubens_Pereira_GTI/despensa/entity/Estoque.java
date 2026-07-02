@@ -2,6 +2,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -21,11 +22,12 @@ public class Estoque {
     private Produto produto;
 
     //kg, mg, L
-    @DecimalMin(value = "0.0", message = "quantidade minima é de 0.0")
+    @PositiveOrZero(message = "quantidade minima não pode ser negativa")
     @Column(name = "quantidade", precision = 10, scale = 2)
     private BigDecimal quantidade;
 
     @Column(name = "quantidade_reservada", precision = 10, scale = 2)
+    @PositiveOrZero(message = " quanttidade reservada não pode ser negativa")
     private BigDecimal qtd_reservada;
 
     @Column(name = "localizacao")

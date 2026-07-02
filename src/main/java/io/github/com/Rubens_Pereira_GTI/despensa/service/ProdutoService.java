@@ -4,6 +4,7 @@ import io.github.com.Rubens_Pereira_GTI.despensa.converter.ProdutoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoRequestDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.ProdutoDtoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
@@ -106,6 +107,13 @@ public class ProdutoService {
             throw new RuntimeException("Página vazia");
         }
 
+        /*  outra forma de fazer a conversão
+        Page<ProdutoResponseDTO> lista = produtosPage.map(p -> {
+            ProdutoResponseDTO dto = produtoConverter.convert(p);
+            if(dto == null) throw  new RuntimeException();
+            return dto;
+        });
+        */
         return produtosPage.map(produtoConverter::convert);
     }
 

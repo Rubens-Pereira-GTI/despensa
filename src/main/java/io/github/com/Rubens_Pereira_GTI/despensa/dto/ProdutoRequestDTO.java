@@ -20,6 +20,7 @@ public record ProdutoRequestDTO(
         @PositiveOrZero(message = "O estoque mínimo não pode ser negativo.")
         BigDecimal estoqueMinimo,
 
+        @NotNull(message = "campo ativo obrigatorio")
         boolean ativo,
 
         @NotNull(message = "A categoria é obrigatória.")
@@ -30,5 +31,6 @@ public record ProdutoRequestDTO(
 
         Long localId,
         String localizacao
+
 ) {
 }

@@ -19,12 +19,8 @@ public class ProdutoConverter implements Converter<Produto, ProdutoResponseDTO> 
                 source.isAtivo(),
                 source.getDataDeCriacao(),
                 source.getDataDeAtualizacao(),
-
-                // Lendo do relacionamento JPA com segurança contra nulos:
-                source.getCategoriaId() != null ? source.getCategoriaId() : null,
-                source.getUnidadeMedidaId() != null ? source.getUnidadeMedidaId() : null,
-
-
+                source.getCategoriaId() ,
+                source.getUnidadeMedidaId(),
                 source.getLocalId(),
                 source.getLocalizacao()
         );
