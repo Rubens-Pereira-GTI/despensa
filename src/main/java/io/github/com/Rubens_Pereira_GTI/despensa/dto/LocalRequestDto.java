@@ -17,7 +17,7 @@ public record LocalRequestDto(
         @NotNull(message = "campo ativo obrigatorio")
         Boolean ativo
 
-        /*
+        /*TODO
         @NotNull
         LocalDateTime dataCriacao,
 

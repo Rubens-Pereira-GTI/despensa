@@ -16,6 +16,9 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
+    @Column
+    private String descricao;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
     private List<Produto> produtos;
 
@@ -40,6 +43,14 @@ public class Categoria {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public List<Produto> getProdutos() {
