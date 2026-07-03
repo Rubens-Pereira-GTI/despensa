@@ -2,7 +2,6 @@ package io.github.com.Rubens_Pereira_GTI.despensa.converter;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

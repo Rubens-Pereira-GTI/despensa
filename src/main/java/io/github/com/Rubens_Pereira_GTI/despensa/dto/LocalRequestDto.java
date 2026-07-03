@@ -3,11 +3,12 @@ package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
-
 public record LocalRequestDto(
+
+        @NotNull(groups = OnUpdate.class)
         Long id,
 
+        @NotNull
         @NotBlank(message = "campo nome obrigatorio")
         String nome,
 
@@ -16,5 +17,14 @@ public record LocalRequestDto(
         @NotNull(message = "campo ativo obrigatorio")
         Boolean ativo
 
+        /*
+        @NotNull
+        LocalDateTime dataCriacao,
+
+        @NotNull
+        LocalDateTime dataAtualizacao
+
+        */
         ) {
+        public interface OnUpdate {}
 }

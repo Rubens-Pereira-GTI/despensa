@@ -1,23 +1,27 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.converter;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResponseDto;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalRequestDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
-public class LocalDtoConverter implements Converter<Local, LocalResponseDto> {
+@Component
+public class LocalDtoConverter implements Converter<LocalRequestDto, Local> {
 
     @Override
-    public LocalResponseDto convert(Local local){
+    public Local convert(LocalRequestDto requestDto){
 
-        LocalResponseDto responseDto = new LocalResponseDto(
-                local.getId(),
-                local.getNome(),
-                local.getDescricao(),
-                local.getAtivo(),
-                local.getDataCriacao(),
-                local.getDataAtualizacao()
+        //TODO talvez mudar para o construtor, pra ficar mais limpo
+        Local local = new Local();
 
-        );
-        return  responseDto;
+        local.setId(requestDto.id());
+        local.setNome(requestDto.nome());
+        local.setDescricao(requestDto.descricao());
+        local.setAtivo(requestDto.ativo());
+        //local.setDataCriacao(requestDto.dataCriacao());
+        //local.setDataAtualizacao(requestDto.dataAtualizacao());
+
+
+        return  local;
     }
 }
