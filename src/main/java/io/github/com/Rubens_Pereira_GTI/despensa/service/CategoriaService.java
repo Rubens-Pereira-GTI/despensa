@@ -42,11 +42,7 @@ public class CategoriaService {
     }
 
     public Categoria salvarCategoria(Categoria categoria) {
-
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoria.getId());
-        if(categoriaOpt.isPresent()){
-            throw  new RegistroDuplicadoException("Essa Categoria já existe");
-        }
+        categoriaValidator.validar(categoria);
         return categoriaRepository.save(categoria);
     }
 
