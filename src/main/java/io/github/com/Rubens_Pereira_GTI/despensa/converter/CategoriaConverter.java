@@ -1,6 +1,5 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.converter;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaRequestDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;

@@ -1,12 +1,12 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.CategoriaConverter;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaRequestDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
+import io.github.com.Rubens_Pereira_GTI.despensa.validator.CategoriaValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,23 +19,20 @@ public class CategoriaService {
 
     private final CategoriaConverter converter;
     private final CategoriaRepository categoriaRepository;
-    private final LocalRepository localRepository;
+    private final CategoriaValidator categoriaValidator;
 
     public CategoriaService(CategoriaConverter converter,
                             CategoriaRepository categoriaRepository,
-                            LocalRepository localRepository) {
+                            CategoriaValidator categoriaValidator
+    ) {
         this.converter = converter;
         this.categoriaRepository = categoriaRepository;
-        this.localRepository = localRepository;
+        this.categoriaValidator = categoriaValidator;
     }
 
     @Transactional(readOnly = true)
-    public CategoriaResponseDto buscaCategoriaId(Long id){
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-        if(categoriaOpt.isEmpty()){
-            throw new EntityNotFoundException("Categoria não encontrada");
-        }
-        return converter.toResponseDto(categoriaOpt.get());
+    public Optional<Categoria> buscaCategoriaPorId(Long id){
+        return categoriaRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
@@ -44,38 +41,21 @@ public class CategoriaService {
         return pagina.map(converter::toResponseDto);
     }
 
-    public CategoriaResponseDto salvarCategoria(CategoriaRequestDto requestDto) {
+    public Categoria salvarCategoria(Categoria categoria) {
 
-        Local local = localRepository.findById(requestDto.localId())
-                .orElseThrow(() -> new EntityNotFoundException("Local não encontrado com id: " + requestDto.localId()));
-
-        Categoria categoria = converter.toEntity(requestDto, local);
-        categoria = categoriaRepository.save(categoria);
-
-        return converter.toResponseDto(categoria);
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoria.getId());
+        if(categoriaOpt.isPresent()){
+            throw  new RegistroDuplicadoException("Essa Categoria já existe");
+        }
+        return categoriaRepository.save(categoria);
     }
 
     @Transactional
-    public CategoriaResponseDto alterarCategoria(Long id, CategoriaRequestDto requestDto) {
+    public Categoria alterarCategoria(Long id, Categoria categoria) {
 
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-        if(categoriaOpt.isEmpty()){
-            throw new EntityNotFoundException("Categoria não encontrada, id: "+ id );
-        }
-        Categoria categoria = categoriaOpt.get();
-
-        Local local = localRepository.findById(requestDto.localId())
-                .orElseThrow(() -> new EntityNotFoundException("Local não encontrado com id: " + requestDto.localId()));
-
-        Categoria categoriaAtualizada = converter.toEntity(requestDto, local);
-
-        categoria.setNome(categoriaAtualizada.getNome());
-        categoria.setDescricao(categoriaAtualizada.getDescricao());
-        categoria.setLocal(categoriaAtualizada.getLocal());
-
-        categoria = categoriaRepository.save(categoria);
-
-        return converter.toResponseDto(categoria);
+        //TODO Verificar se a categoria não está duplicada - REGRA de négocio
+        categoriaValidator.validar(categoria);
+        return categoriaRepository.save(categoria);
 
     }
 

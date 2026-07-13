@@ -39,6 +39,13 @@ public class Movimentacao {
     @Column(name = "data_movimentacao")
     private LocalDateTime dataMovimentacao;
 
+    @PrePersist
+    public void onCreate(){
+        dataCriacao = LocalDateTime.now();
+        dataMovimentacao = LocalDateTime.now();
+    }
+
+    //TODO
 
     public Long getId() {
         return id;

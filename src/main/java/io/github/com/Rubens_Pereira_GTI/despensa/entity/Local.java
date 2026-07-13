@@ -28,6 +28,16 @@ public class Local {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
+    @PrePersist
+    public void onCreate(){
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate(){
+        dataAtualizacao = LocalDateTime.now();
+    }
     public Long getId() {
         return id;
     }

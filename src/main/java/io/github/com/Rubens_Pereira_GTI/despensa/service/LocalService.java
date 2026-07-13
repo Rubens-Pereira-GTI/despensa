@@ -2,11 +2,9 @@ package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.LocalConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.converter.LocalDtoConverter;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalRequestDto;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResponseDto;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
-import org.hibernate.engine.spi.Resolution;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,82 +17,46 @@ import java.util.Optional;
 public class LocalService {
 
     private final LocalRepository localRepository;
-    private final LocalConverter localConverter;
-    private final LocalDtoConverter localDtoConverter;
 
-    public LocalService(LocalRepository localRepository,
-                        LocalConverter localConverter,
-                        LocalDtoConverter localDtoConverter
-    ){
+    public LocalService(LocalRepository localRepository ){
         this.localRepository = localRepository;
-        this.localConverter = localConverter;
-        this.localDtoConverter = localDtoConverter;
     }
 
     @Transactional(readOnly = true)
-    public LocalResponseDto findById(Long id){
-        Optional<Local> localOpt = localRepository.findById(id);
-
-        if(localOpt.isEmpty()) throw new RuntimeException("Local não encontrado");
-
-        LocalResponseDto responseDto = localConverter.convert(localOpt.get());
-
-        return responseDto ;
+    public Optional<Local> buscarPorId(Long id){
+        return localRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<LocalResponseDto> findAll(){
+    public List<Local> findAll(){
         List<Local> local = localRepository.findAll();
-
-        List<LocalResponseDto> responseDto = local.stream().map(localConverter::convert).toList();
-
-        return responseDto;
+        return local;
     }
 
     @Transactional(readOnly = true)
-    public Page<LocalResponseDto> buscaPaginada(Pageable pageable){
-        Page<Local> pagina = localRepository.findAll(pageable);
+    public Page<Local> buscaPaginada(Pageable pageable){
 
-        Page<LocalResponseDto> responseDto = pagina.map(localConverter::convert);
-
-        return responseDto;
+        return localRepository.findAll(pageable);
     }
 
-    public LocalResponseDto salvarLocal(LocalRequestDto requestDto){
+    public Local salvarLocal(LocalDTO dto){
 
-        Local local = localDtoConverter.convert(requestDto);
+        Local local = dto.toLocal();
 
-        local = localRepository.save(local);
-
-        return localConverter.convert(local);
+        return localRepository.save(local);
     }
 
     @Transactional
-    public LocalResponseDto alterarLocal(LocalRequestDto requestDto, Long id){
+    public Local alterarLocal(LocalDTO dto){
 
-        Local local = localDtoConverter.convert(requestDto);
+        Local local = dto.toLocal();
 
-        Optional<Local> localOpt = localRepository.findById(id);
+        local = localRepository.save(local);
 
-        if(localOpt.isEmpty()) {
-            throw new RuntimeException("objeto não encontrado");
-        }
+        return  local;
+    }
 
-        Local localDB = localOpt.get();
-
-        if(local != null){
-            localDB.setNome(local.getNome());
-            localDB.setDescricao(local.getDescricao());
-            localDB.setAtivo(local.getAtivo());
-            localDB.setDataAtualizacao(local.getDataAtualizacao());
-
-        }else {
-            throw  new RuntimeException("Conversão de local vazia");
-        }
-
-        localDB = localRepository.save(localDB);
-
-
-        return  localConverter.convert(localDB);
+    public void deletar(Long id) {
+        localRepository.deleteById(id);
     }
 }
