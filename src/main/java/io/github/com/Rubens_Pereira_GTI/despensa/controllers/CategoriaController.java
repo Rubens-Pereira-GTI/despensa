@@ -72,7 +72,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<CategoriaResponseDto> atualizaCategoria(@PathVariable Long id,
+    ResponseEntity<Object> atualizaCategoria(@PathVariable Long id,
                                                            @RequestBody @Valid CategoriaDTO dto){
 
         Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
@@ -81,14 +81,25 @@ public class CategoriaController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
-            Categoria categoria = dto.toCategoria();
-            categoriaService.alterarCategoria(id, categoria);
+            Categoria categoria = categoriaOpt.get();
+            categoria.setId(id);
+            categoria.setNome(dto.nome());
+            categoria.setDescricao(dto.descricao());
+            categoria.setLocalId(dto.localId());
+
+            categoriaService.atualizarCategoria(categoria);
             return ResponseEntity.noContent().build();
 
         }catch (RegistroDuplicadoException ex){
-            //TODO fazer um objeto err para armazenas os valores do erro
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            ErroResponse errResponse = ErroResponse.conflito(ex.getMessage());
+            return ResponseEntity.status(errResponse.status()).body(errResponse);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deletaCategoria(@PathVariable Long id){
+        categoriaService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
@@ -96,12 +107,6 @@ public class CategoriaController {
             @PageableDefault(size = 10) Pageable pageable) {
         Page<CategoriaResponseDto> responseDto = categoriaService.buscaTodasCategoriasPaginada(pageable);
         return ResponseEntity.ok(responseDto);
-    }
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deletaCategoria(@PathVariable Long id){
-        categoriaService.deletar(id);
-        return ResponseEntity.noContent().build();
     }
 
 }

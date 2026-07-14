@@ -47,9 +47,7 @@ public class CategoriaService {
     }
 
     @Transactional
-    public Categoria alterarCategoria(Long id, Categoria categoria) {
-
-        //TODO Verificar se a categoria não está duplicada - REGRA de négocio
+    public Categoria atualizarCategoria(Categoria categoria) {
         categoriaValidator.validar(categoria);
         return categoriaRepository.save(categoria);
 
