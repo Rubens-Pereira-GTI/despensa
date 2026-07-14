@@ -98,7 +98,14 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deletaCategoria(@PathVariable Long id){
-        categoriaService.deletar(id);
+
+        Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
+        if(categoriaOpt.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        categoriaService.deletar(categoriaOpt.get());
+
         return ResponseEntity.noContent().build();
     }
 
