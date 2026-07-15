@@ -32,9 +32,17 @@ public class CategoriaService {
 
     @Transactional(readOnly = true)
     public Optional<Categoria> buscaCategoriaPorId(Long id){
+
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+
+        if(categoriaOpt.isEmpty()){ //
+            return categoriaOpt;
+        }
+
         Local local = categoriaOpt.get().getLocal();
         categoriaOpt.get().setLocalId(local.getId());
+
+
         return categoriaOpt;
     }
 
@@ -52,7 +60,6 @@ public class CategoriaService {
 
     public void deletar(Categoria categoria) {
 
-        //TODO talvez pensar em uma regra de negocio, ex não pode ser deletado se tiver produtos nessa categoria
         if(possuiProduto(categoria)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir categoria que está associada a um produto");
         }
@@ -61,10 +68,6 @@ public class CategoriaService {
     }
 
     public boolean possuiProduto(Categoria categoria){
-
-        Optional<List<Produto>> produtosOpt = produtoRepository.findByCategoria(categoria);
-
-        return produtosOpt.isPresent();
-
+        return produtoRepository.existsByCategoria(categoria);
     }
 }

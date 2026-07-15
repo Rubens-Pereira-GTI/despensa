@@ -5,10 +5,12 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
+import io.github.com.Rubens_Pereira_GTI.despensa.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,12 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
     private final LocalService localService;
+    private final ProdutoService produtoService;
 
-    public CategoriaController(CategoriaService categoriaService, LocalService localService) {
+    public CategoriaController(CategoriaService categoriaService, LocalService localService, ProdutoService produtoService) {
         this.categoriaService = categoriaService;
         this.localService = localService;
+        this.produtoService = produtoService;
     }
 
     @GetMapping("/{id}")
@@ -117,16 +121,22 @@ public class CategoriaController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deletaCategoria(@PathVariable Long id){
+    ResponseEntity<Object> deletaCategoria(@PathVariable Long id){
 
         Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
         if(categoriaOpt.isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        categoriaService.deletar(categoriaOpt.get());
+        try{
+            categoriaService.deletar(categoriaOpt.get());
+            return ResponseEntity.noContent().build();
 
-        return ResponseEntity.noContent().build();
+        }catch (OperacaoNaoPermitidaException ex){
+            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
+            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
+        }
+
     }
 
 

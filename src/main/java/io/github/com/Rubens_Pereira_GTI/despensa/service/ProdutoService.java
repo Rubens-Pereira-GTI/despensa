@@ -1,9 +1,13 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -23,4 +27,7 @@ public class ProdutoService {
     }
 
 
+    public Optional<Produto> buscarPorCategoria(Categoria categoria) {
+        return produtoRepository.findByCategoria(categoria);
+    }
 }
