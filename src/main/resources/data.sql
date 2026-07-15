@@ -1,19 +1,20 @@
 -- Inserindo dados nas tabelas que são referenciadas por foreign keys primeiro
 
 -- Local (precisa vir antes de categoria por causa da FK)
-INSERT INTO social.local (nome, descricao, ativo, ds_sigla_atividade, data_criacao, data_atualizacao)
-VALUES ('Despensa', 'Despensa principal da cozinha', true, 'DSP', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO social.local (nome, descricao, ativo, data_criacao, data_atualizacao)
+VALUES ('Despensa', 'Despensa principal da cozinha', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO social.local (nome, descricao, ativo, ds_sigla_atividade, data_criacao, data_atualizacao)
-VALUES ('Geladeira', 'Geladeira da cozinha', true, 'GLD', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO social.local (nome, descricao, ativo, data_criacao, data_atualizacao)
+VALUES ('Geladeira', 'Geladeira da cozinha', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO social.local (nome, descricao, ativo, ds_sigla_atividade, data_criacao, data_atualizacao)
-VALUES ('Freezer', 'Freezer horizontal da área de serviço', true, 'FRZ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO social.local (nome, descricao, ativo, data_criacao, data_atualizacao)
+VALUES ('Freezer', 'Freezer horizontal da área de serviço', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Categoria
-INSERT INTO social.categoria (nome, local_id) VALUES ('Alimentos', 1);
-INSERT INTO social.categoria (nome, local_id) VALUES ('Bebidas', 2);
-INSERT INTO social.categoria (nome, local_id) VALUES ('Limpeza', 1);
+INSERT INTO social.categoria (nome, descricao, local_id) VALUES ('Alimentos', 'Alimentos não perecíveis e grãos', 1);
+INSERT INTO social.categoria (nome, descricao, local_id) VALUES ('Bebidas', 'Bebidas em geral', 2);
+INSERT INTO social.categoria (nome, descricao, local_id) VALUES ('Limpeza', 'Produtos de limpeza e higiene', 1);
+INSERT INTO social.categoria (nome, descricao, local_id) VALUES ('Hortifrúti', 'Frutas, verduras e legumes', 2);
 
 -- Unidade de Medida
 INSERT INTO social.unidade_medida (nome, sigla, descricao, ativo, data_criacao, data_atualizacao)

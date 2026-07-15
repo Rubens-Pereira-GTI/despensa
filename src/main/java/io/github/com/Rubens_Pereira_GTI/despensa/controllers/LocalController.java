@@ -1,34 +1,35 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/local")
+@RequestMapping("/locais")
 public class LocalController {
 
-    private LocalService localService;
+    private static final Logger log = LoggerFactory.getLogger(LocalController.class);
+    private final LocalService localService;
 
     public LocalController(LocalService localService){
         this.localService = localService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LocalDTO> buscarLocalPorid(@PathVariable Long id){
+    public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id){
 
         Optional<Local> localOpt = localService.buscarPorId(id);
 
@@ -36,54 +37,77 @@ public class LocalController {
             return ResponseEntity.notFound().build();
         }
 
-        LocalDTO localDTO = new LocalDTO(
-                localOpt.get().getId(),
-                localOpt.get().getNome(),
-                localOpt.get().getDescricao(),
-                localOpt.get().getAtivo()
-        );
+        LocalDTO localDTO = LocalDTO.fromLocal(localOpt.get());
 
         return ResponseEntity.ok(localDTO);
     }
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@Valid @RequestBody LocalDTO localDTO){
+    public ResponseEntity<Object> salvar(@Valid @RequestBody LocalDTO localDTO){
 
-        Local local = localService.salvarLocal(localDTO);
+        Local local = localDTO.toLocal();
 
-        URI location = ServletUriComponentsBuilder.
-                fromCurrentRequest().
-                path("/{id}").
-                buildAndExpand(local.getId()).
-                toUri();
+        try {
+            localService.salvarLocal(local);
 
-        return ResponseEntity.created(location).build();
+            URI location = ServletUriComponentsBuilder.
+                    fromCurrentRequest().
+                    path("/{id}").
+                    buildAndExpand(local.getId()).
+                    toUri();
+
+            return ResponseEntity.created(location).build();
+            //TODO fazer o try catch para o validador
+        }catch (RegistroDuplicadoException ex){
+            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
+            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleta(@PathVariable Long id){
+    public ResponseEntity<Object> deleta(@PathVariable Long id){
 
         Optional<Local> localOpt = localService.buscarPorId(id);
         if(localOpt.isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        localService.deletar(localOpt.get().getId());
+        try{
+            localService.deletar(localOpt.get());
+            return ResponseEntity.noContent().build();
 
-        return ResponseEntity.noContent().build();
+        }catch (OperacaoNaoPermitidaException ex){
+            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
+            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
+        }
+
 
     }
 
     //TODO Verificar se é necessário retornar o ID se não, fazer um DTOresponse
     @PutMapping("/{id}")
-    public ResponseEntity<Local> alterar(@Valid @RequestBody LocalDTO localDTO){
+    public ResponseEntity<Object> alterar(@Valid @RequestBody LocalDTO localDTO, @PathVariable Long id ){
 
-        Optional<Local> localOpt = localService.buscarPorId(localDTO.id());
-        if(localOpt.isEmpty()){
-            return ResponseEntity.notFound().build();
+        try {
+            Optional<Local> localOpt = localService.buscarPorId(id);
+            if(localOpt.isEmpty()){
+                return ResponseEntity.notFound().build();
+            }
+
+            //atualiza o local
+            Local local = localOpt.get();
+            local.setNome(localDTO.nome());
+            local.setDescricao(localDTO.descricao());
+            local.setAtivo(localDTO.ativo());
+
+            localService.alterarLocal(local);
+            return ResponseEntity.noContent().build();
+
+        } catch (RegistroDuplicadoException ex) {
+            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
+            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
         }
-        Local local = localService.alterarLocal(localDTO);
-        return ResponseEntity.ok(local);
+
     }
 
     @GetMapping
@@ -101,21 +125,6 @@ public class LocalController {
 
         return ResponseEntity.ok(dtos);
     }
-
-    //TODO verificar se tem que devolver uma pagina com dtos
-    @GetMapping("/paginado")
-    public ResponseEntity<Page<Local>> buscarLocaisPaginado(
-            @PageableDefault(size = 10, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable ){
-
-        Page<Local> pgDtos = localService.buscaPaginada(pageable);
-
-        return ResponseEntity.ok(localService.buscaPaginada(pageable));
-    }
-
-
-
-
-
 
 
 }

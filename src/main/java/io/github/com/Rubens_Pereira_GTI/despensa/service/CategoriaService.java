@@ -1,18 +1,12 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
-import io.github.com.Rubens_Pereira_GTI.despensa.converter.CategoriaConverter;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.CategoriaValidator;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +16,15 @@ import java.util.Optional;
 @Service
 public class CategoriaService {
 
-    private final CategoriaConverter converter;
+
     private final CategoriaRepository categoriaRepository;
     private final CategoriaValidator categoriaValidator;
     private final ProdutoRepository produtoRepository;
 
-    public CategoriaService(CategoriaConverter converter,
-                            CategoriaRepository categoriaRepository,
+    public CategoriaService(CategoriaRepository categoriaRepository,
                             CategoriaValidator categoriaValidator,
                             ProdutoRepository produtoRepository
     ) {
-        this.converter = converter;
         this.categoriaRepository = categoriaRepository;
         this.categoriaValidator = categoriaValidator;
         this.produtoRepository = produtoRepository;
@@ -40,13 +32,10 @@ public class CategoriaService {
 
     @Transactional(readOnly = true)
     public Optional<Categoria> buscaCategoriaPorId(Long id){
-        return categoriaRepository.findById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<CategoriaResponseDto> buscaTodasCategoriasPaginada(Pageable pageable){
-        Page<Categoria> pagina = categoriaRepository.findAll(pageable);
-        return pagina.map(converter::toResponseDto);
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+        Local local = categoriaOpt.get().getLocal();
+        categoriaOpt.get().setLocalId(local.getId());
+        return categoriaOpt;
     }
 
     public Categoria salvarCategoria(Categoria categoria) {

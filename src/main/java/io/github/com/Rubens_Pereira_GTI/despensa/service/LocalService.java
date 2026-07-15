@@ -1,12 +1,13 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.converter.LocalConverter;
-import io.github.com.Rubens_Pereira_GTI.despensa.converter.LocalDtoConverter;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
+import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import io.github.com.Rubens_Pereira_GTI.despensa.validator.LocalValidator;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,15 @@ import java.util.Optional;
 public class LocalService {
 
     private final LocalRepository localRepository;
+    private final LocalValidator localValidator;
+    public final CategoriaRepository categoriaRepository;
 
-    public LocalService(LocalRepository localRepository ){
+    public LocalService(LocalRepository localRepository,
+                        LocalValidator localValidator,
+                        CategoriaRepository categoriaRepository){
         this.localRepository = localRepository;
+        this.localValidator = localValidator;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -33,30 +40,24 @@ public class LocalService {
         return local;
     }
 
-    @Transactional(readOnly = true)
-    public Page<Local> buscaPaginada(Pageable pageable){
-
-        return localRepository.findAll(pageable);
-    }
-
-    public Local salvarLocal(LocalDTO dto){
-
-        Local local = dto.toLocal();
-
+    public Local salvarLocal(Local local){
+        localValidator.validar(local);
         return localRepository.save(local);
     }
 
     @Transactional
-    public Local alterarLocal(LocalDTO dto){
-
-        Local local = dto.toLocal();
-
-        local = localRepository.save(local);
-
-        return  local;
+    public Local alterarLocal(Local local){
+        localValidator.validar(local);
+        return localRepository.save(local);
     }
 
-    public void deletar(Long id) {
-        localRepository.deleteById(id);
+    @Transactional
+    public void deletar(Local local) {
+        if(categoriaRepository.existsByLocal(local)){
+            throw new OperacaoNaoPermitidaException("Não é permitido excluir o local com Categorias vinculadas");
+        }
+        localRepository.deleteById(local.getId());
     }
+
+
 }

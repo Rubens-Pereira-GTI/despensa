@@ -2,6 +2,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -15,13 +16,13 @@ public class Estoque {
 
     //TODO [Reverse Engineering] generate columns from DB
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Produto produto;
 
-    //kg, mg, L
     @PositiveOrZero(message = "quantidade minima não pode ser negativa")
     @Column(name = "quantidade", precision = 10, scale = 2)
     private BigDecimal quantidade;

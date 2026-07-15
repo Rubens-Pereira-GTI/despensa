@@ -22,6 +22,7 @@ public record CategoriaDTO(
         categoria.setId(this.id);
         categoria.setNome(this.nome);
         categoria.setDescricao(this.descricao);
+        categoria.setLocalId(this.localId);
         return categoria;
     }
 }

@@ -4,8 +4,11 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
+import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +26,11 @@ import java.util.Optional;
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
+    private final LocalService localService;
 
-    public CategoriaController(CategoriaService categoriaService) {
+    public CategoriaController(CategoriaService categoriaService, LocalService localService) {
         this.categoriaService = categoriaService;
+        this.localService = localService;
     }
 
     @GetMapping("/{id}")
@@ -33,8 +38,9 @@ public class CategoriaController {
 
         Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
         if(categoriaOpt.isEmpty()){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return  ResponseEntity.notFound().build();
         }
+
         Categoria categoria = categoriaOpt.get();
 
         CategoriaDTO categoriaDTO = new CategoriaDTO(
@@ -54,6 +60,12 @@ public class CategoriaController {
 
         try {
 
+            Optional<Local> localOpt = localService.buscarPorId(categoria.getLocalId());
+            if(localOpt.isEmpty()){
+                throw  new OperacaoNaoPermitidaException("local não existe");
+            }
+
+            categoria.setLocal(localOpt.get());
             categoriaService.salvarCategoria(categoria);
 
             URI location = ServletUriComponentsBuilder.
@@ -68,25 +80,33 @@ public class CategoriaController {
             ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
             return ResponseEntity.status(erroResponse.status()).body(erroResponse);
 
+        }catch (OperacaoNaoPermitidaException ex){
+            ErroResponse erroResponse = ErroResponse.naoEncontrado(ex.getMessage());
+            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
         }
     }
 
     @PutMapping("/{id}")
     ResponseEntity<Object> atualizaCategoria(@PathVariable Long id,
-                                                           @RequestBody @Valid CategoriaDTO dto){
+                                             @RequestBody @Valid CategoriaDTO dto){
 
         Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
+        if (categoriaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Optional<Local> localOpt = localService.buscarPorId(dto.localId());
+        if(localOpt.isEmpty()){
+            throw  new OperacaoNaoPermitidaException("local não existe");
+        }
+
+        Categoria categoria = categoriaOpt.get();
+        categoria.setId(id);
+        categoria.setNome(dto.nome());
+        categoria.setDescricao(dto.descricao());
+        categoria.setLocalId(dto.localId());
+        categoria.setLocal(localOpt.get());
+
         try {
-            if (categoriaOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-
-            Categoria categoria = categoriaOpt.get();
-            categoria.setId(id);
-            categoria.setNome(dto.nome());
-            categoria.setDescricao(dto.descricao());
-            categoria.setLocalId(dto.localId());
-
             categoriaService.atualizarCategoria(categoria);
             return ResponseEntity.noContent().build();
 
@@ -109,11 +129,5 @@ public class CategoriaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<Page<CategoriaResponseDto>> buscaTodasCategoriasPaginada(
-            @PageableDefault(size = 10) Pageable pageable) {
-        Page<CategoriaResponseDto> responseDto = categoriaService.buscaTodasCategoriasPaginada(pageable);
-        return ResponseEntity.ok(responseDto);
-    }
 
 }
