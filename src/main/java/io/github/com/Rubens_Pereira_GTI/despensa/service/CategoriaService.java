@@ -30,6 +30,7 @@ public class CategoriaService {
         this.produtoRepository = produtoRepository;
     }
 
+    //abordagem utilizando o relacionamento entre os objetos  para pegar local
     @Transactional(readOnly = true)
     public Optional<Categoria> buscaCategoriaPorId(Long id){
 
@@ -42,6 +43,19 @@ public class CategoriaService {
         Local local = categoriaOpt.get().getLocal();
         categoriaOpt.get().setLocalId(local.getId());
 
+        return categoriaOpt;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Categoria> buscaCategoria(Long id){
+
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+        Long localId = categoriaRepository.findLocalIdByCategoriaId(id);
+
+        if(categoriaOpt.isEmpty()){
+           return categoriaOpt;
+        }
+        categoriaOpt.get().setLocalId(localId);
 
         return categoriaOpt;
     }
@@ -69,5 +83,9 @@ public class CategoriaService {
 
     public boolean possuiProduto(Categoria categoria){
         return produtoRepository.existsByCategoria(categoria);
+    }
+
+    public List<Categoria> buscarTodas() {
+        return categoriaRepository.findAll();
     }
 }

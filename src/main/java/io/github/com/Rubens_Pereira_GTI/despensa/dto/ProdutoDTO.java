@@ -2,15 +2,17 @@ package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 
 
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
 public record ProdutoDTO(
         Long id,
-        String nome,
+        @NotBlank String nome,
         String descricao,
-        BigDecimal estoqueMinimo,
-        boolean ativo,
+        @NotNull BigDecimal estoqueMinimo,
+        @NotNull Boolean ativo,
         Long categoriaId,
         Long localId,
         String localizacao

@@ -32,10 +32,13 @@ CREATE TABLE unidade_medida
 -- Tabela Categoria
 CREATE TABLE categoria
 (
-    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome      VARCHAR(255) NOT NULL,
-    descricao VARCHAR(255),
-    local_id  BIGINT,
+    id                BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    nome              VARCHAR(100) NOT NULL,
+    descricao         VARCHAR(255),
+    ativo             BOOLEAN      NOT NULL DEFAULT TRUE,
+    local_id          BIGINT,
+    data_criacao      TIMESTAMP    NOT NULL,
+    data_atualizacao  TIMESTAMP    NOT NULL,
     FOREIGN KEY (local_id) REFERENCES local (id)
 );
 -- Tabela Produto (precisa vir depois de categoria e unidade_medida por causa das FKs)
@@ -57,7 +60,13 @@ CREATE TABLE produto
 -- Tabela Estoque
 CREATE TABLE estoque
 (
-    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    produto_id BIGINT,
+    id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
+    produto_id            BIGINT         NOT NULL,
+    quantidade            DECIMAL(10, 2) NOT NULL,
+    quantidade_reservada  DECIMAL(10, 2) NOT NULL,
+    localizacao           VARCHAR(100),
+    data_validade         DATE,
+    data_criacao          TIMESTAMP      NOT NULL,
+    data_atualizacao      TIMESTAMP      NOT NULL,
     FOREIGN KEY (produto_id) REFERENCES produto (id)
 );

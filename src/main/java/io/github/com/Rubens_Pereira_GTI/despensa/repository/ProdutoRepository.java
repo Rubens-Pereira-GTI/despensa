@@ -16,4 +16,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     boolean existsByCategoria(Categoria categoria);
 
+    Optional<Produto> findByNomeIgnoreCase(String nome);
+
+    Optional<Produto> findByNome(String nome);
 }

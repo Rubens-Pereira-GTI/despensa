@@ -28,20 +28,6 @@ public class LocalController {
         this.localService = localService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id){
-
-        Optional<Local> localOpt = localService.buscarPorId(id);
-
-        if(localOpt.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        LocalDTO localDTO = LocalDTO.fromLocal(localOpt.get());
-
-        return ResponseEntity.ok(localDTO);
-    }
-
     @PostMapping
     public ResponseEntity<Object> salvar(@Valid @RequestBody LocalDTO localDTO){
 
@@ -57,11 +43,41 @@ public class LocalController {
                     toUri();
 
             return ResponseEntity.created(location).build();
-            //TODO fazer o try catch para o validador
         }catch (RegistroDuplicadoException ex){
             ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
             return ResponseEntity.status(erroResponse.status()).body(erroResponse);
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id){
+
+        Optional<Local> localOpt = localService.buscarPorId(id);
+
+        if(localOpt.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        LocalDTO localDTO = LocalDTO.fromLocal(localOpt.get());
+
+        return ResponseEntity.ok(localDTO);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<LocalDTO>> buscaTodosLocais(){
+        List<Local> locais = localService.findAll();
+
+        List<LocalDTO> dtos = locais.stream().map(loc -> {
+            return new LocalDTO(
+                    loc.getId(),
+                    loc.getNome(),
+                    loc.getDescricao(),
+                    loc.getAtivo()
+            );
+        }).toList();
+
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")
@@ -83,8 +99,8 @@ public class LocalController {
 
 
     }
-
     //TODO Verificar se é necessário retornar o ID se não, fazer um DTOresponse
+
     @PutMapping("/{id}")
     public ResponseEntity<Object> alterar(@Valid @RequestBody LocalDTO localDTO, @PathVariable Long id ){
 
@@ -108,22 +124,6 @@ public class LocalController {
             return ResponseEntity.status(erroResponse.status()).body(erroResponse);
         }
 
-    }
-
-    @GetMapping
-    public ResponseEntity<List<LocalDTO>> buscaTodosLocais(){
-        List<Local> locais = localService.findAll();
-
-        List<LocalDTO> dtos = locais.stream().map(loc -> {
-                return new LocalDTO(
-                        loc.getId(),
-                        loc.getNome(),
-                        loc.getDescricao(),
-                        loc.getAtivo()
-                );
-                }).toList();
-
-        return ResponseEntity.ok(dtos);
     }
 
 

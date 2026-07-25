@@ -24,14 +24,15 @@ public class LocalValidator {
         }
     }
 
+
     private boolean existeLocalCadastrado(Local local){
         Optional<Local> localOpt = localRepository.findByNome(local.getNome());
 
-        //Locais novos entram nesse teste
+        //se o local é novo (post)
         if(local.getId() == null){
             return localOpt.isPresent();
         }
-        //Locais atualizados entram nessa codição, se tiver presente e não tiver o mesmo id, então está duplicado (true)
+        //se é atualização (put)
         return localOpt.isPresent() && !local.getId().equals(localOpt.get().getId());
 
     }

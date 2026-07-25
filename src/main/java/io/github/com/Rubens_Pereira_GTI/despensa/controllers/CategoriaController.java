@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/categorias")
@@ -29,32 +31,10 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
     private final LocalService localService;
-    private final ProdutoService produtoService;
 
-    public CategoriaController(CategoriaService categoriaService, LocalService localService, ProdutoService produtoService) {
+    public CategoriaController(CategoriaService categoriaService, LocalService localService) {
         this.categoriaService = categoriaService;
         this.localService = localService;
-        this.produtoService = produtoService;
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> buscaCategoriaPorId(@PathVariable Long id){
-
-        Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
-        if(categoriaOpt.isEmpty()){
-            return  ResponseEntity.notFound().build();
-        }
-
-        Categoria categoria = categoriaOpt.get();
-
-        CategoriaDTO categoriaDTO = new CategoriaDTO(
-                categoria.getId(),
-                categoria.getNome(),
-                categoria.getDescricao(),
-                categoria.getLocalId()
-        );
-
-        return ResponseEntity.ok(categoriaDTO);
     }
 
     @PostMapping
@@ -88,6 +68,37 @@ public class CategoriaController {
             ErroResponse erroResponse = ErroResponse.naoEncontrado(ex.getMessage());
             return ResponseEntity.status(erroResponse.status()).body(erroResponse);
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoriaDTO> buscaCategoriaPorId(@PathVariable Long id){
+
+        Optional<Categoria> categoriaOpt = categoriaService.buscaCategoria(id);
+        if(categoriaOpt.isEmpty()){
+            return  ResponseEntity.notFound().build();
+        }
+
+        Categoria categoria = categoriaOpt.get();
+
+        CategoriaDTO categoriaDTO = new CategoriaDTO(
+                categoria.getId(),
+                categoria.getNome(),
+                categoria.getDescricao(),
+                categoria.getLocalId()
+        );
+
+        return ResponseEntity.ok(categoriaDTO);
+    }
+
+    @GetMapping
+    ResponseEntity<List<CategoriaDTO>> buscarTodas(){
+
+        List<Categoria> categorias = categoriaService.buscarTodas();
+
+        List<CategoriaDTO> dtos = categorias.stream().map(CategoriaDTO::toDTO).collect(Collectors.toList());
+
+        //TODO corrigir o notfound
+        return ResponseEntity.ok(dtos);
     }
 
     @PutMapping("/{id}")

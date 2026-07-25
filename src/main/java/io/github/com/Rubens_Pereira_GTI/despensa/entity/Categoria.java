@@ -1,8 +1,10 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,9 +15,11 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(max= 100)
     @Column(nullable = false)
     private String nome;
 
+    @Size(max = 255)
     @Column
     private String descricao;
 
@@ -28,6 +32,31 @@ public class Categoria {
 
     @Transient
     private Long localId;
+
+    //TODO talvez colocar subcategoria e categoria pai
+
+    @NotNull
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    LocalDateTime dataCriacao;
+
+    @NotNull
+    @Column(name = "data_atualizacao", nullable = false, updatable = false)
+    private LocalDateTime dataAtualizacao;
+
+    @NotNull
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo;
+
+    @PrePersist
+    public void onCreate(){
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate(){
+        this.dataAtualizacao = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -75,5 +104,29 @@ public class Categoria {
 
     public void setLocalId(Long localId) {
         this.localId = localId;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

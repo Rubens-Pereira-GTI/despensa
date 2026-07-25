@@ -16,4 +16,8 @@ public record ErroResponse(
     public static ErroResponse naoEncontrado(String mensagem){
         return new ErroResponse(HttpStatus.NOT_FOUND.value(), mensagem, List.of());
     }
+
+    public static ErroResponse defaultMessage(String mensagem){
+        return new ErroResponse(HttpStatus.UNPROCESSABLE_CONTENT.value(), mensagem, List.of());
+    }
 }
