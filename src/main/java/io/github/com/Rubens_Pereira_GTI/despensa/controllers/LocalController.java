@@ -110,13 +110,8 @@ public class LocalController {
                 return ResponseEntity.notFound().build();
             }
 
-            //atualiza o local
-            Local local = localOpt.get();
-            local.setNome(localDTO.nome());
-            local.setDescricao(localDTO.descricao());
-            local.setAtivo(localDTO.ativo());
+            localService.alterarLocal(localOpt.get(), localDTO);
 
-            localService.alterarLocal(local);
             return ResponseEntity.noContent().build();
 
         } catch (RegistroDuplicadoException ex) {

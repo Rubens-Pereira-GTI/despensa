@@ -90,9 +90,8 @@ public class CategoriaController {
 
         List<Categoria> categorias = categoriaService.buscarTodas();
 
-        List<CategoriaDTO> dtos = categorias.stream().map(CategoriaDTO::toDTO).collect(Collectors.toList());
+        List<CategoriaDTO> dtos = categorias.stream().map(CategoriaDTO::toDTO).toList();
 
-        //TODO corrigir o notfound
         return ResponseEntity.ok(dtos);
     }
 
@@ -104,6 +103,7 @@ public class CategoriaController {
         if (categoriaOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        //TODO essa busca deve ser feita na camada Service
         Optional<Local> localOpt = localService.buscarPorId(dto.localId());
         if(localOpt.isEmpty()){
             throw  new OperacaoNaoPermitidaException("local não existe");

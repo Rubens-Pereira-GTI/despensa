@@ -46,8 +46,14 @@ public class LocalService {
     }
 
     @Transactional
-    public Local alterarLocal(Local local){
-        localValidator.validar(local);
+    public Local alterarLocal(Local local, LocalDTO dto){
+        Local localAtualizado = dto.toLocal();
+        localValidator.validar(localAtualizado);
+
+        local.setNome(localAtualizado.getNome());
+        local.setDescricao(localAtualizado.getDescricao());
+        local.setAtivo(localAtualizado.getAtivo());
+
         return localRepository.save(local);
     }
 
