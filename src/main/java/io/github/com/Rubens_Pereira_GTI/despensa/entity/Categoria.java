@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,10 +24,11 @@ public class Categoria {
     @Column
     private String descricao;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
     private List<Produto> produtos;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "local_id")
     private Local local;
 

@@ -80,12 +80,7 @@ public class CategoriaController {
 
         Categoria categoria = categoriaOpt.get();
 
-        CategoriaDTO categoriaDTO = new CategoriaDTO(
-                categoria.getId(),
-                categoria.getNome(),
-                categoria.getDescricao(),
-                categoria.getLocalId()
-        );
+        CategoriaDTO categoriaDTO = CategoriaDTO.toDTO(categoria);
 
         return ResponseEntity.ok(categoriaDTO);
     }

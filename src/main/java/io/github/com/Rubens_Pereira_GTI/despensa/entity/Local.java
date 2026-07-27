@@ -38,6 +38,7 @@ public class Local {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "local")
     private List<Categoria> categorias;
 
