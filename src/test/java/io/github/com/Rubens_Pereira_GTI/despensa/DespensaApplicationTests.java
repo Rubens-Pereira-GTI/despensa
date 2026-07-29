@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest

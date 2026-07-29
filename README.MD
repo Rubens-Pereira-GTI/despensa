@@ -4,6 +4,9 @@ Sistema para gerenciamento de despensa/estoque de produtos, desenvolvido com **S
 
 ---
 
+## Observações
+
+
 ## Pré-requisitos
 
 - **Java 17** ou superior

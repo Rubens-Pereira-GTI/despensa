@@ -34,7 +34,7 @@ public class LocalController {
         Local local = localDTO.toLocal();
 
         try {
-            localService.salvarLocal(local);
+            localService.salvar(local);
 
             URI location = ServletUriComponentsBuilder.
                     fromCurrentRequest().
@@ -51,15 +51,8 @@ public class LocalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id){
-
-        Optional<Local> localOpt = localService.buscarPorId(id);
-
-        if(localOpt.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        LocalDTO localDTO = LocalDTO.fromLocal(localOpt.get());
-
+        Local local = localService.buscarPorId(id);
+        LocalDTO localDTO = LocalDTO.fromLocal(local);
         return ResponseEntity.ok(localDTO);
     }
 
@@ -82,42 +75,14 @@ public class LocalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleta(@PathVariable Long id){
-
-        Optional<Local> localOpt = localService.buscarPorId(id);
-        if(localOpt.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        try{
-            localService.deletar(localOpt.get());
-            return ResponseEntity.noContent().build();
-
-        }catch (OperacaoNaoPermitidaException ex){
-            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-        }
-
-
+        localService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
-    //TODO Verificar se é necessário retornar o ID se não, fazer um DTOresponse
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> alterar(@Valid @RequestBody LocalDTO localDTO, @PathVariable Long id ){
-
-        try {
-            Optional<Local> localOpt = localService.buscarPorId(id);
-            if(localOpt.isEmpty()){
-                return ResponseEntity.notFound().build();
-            }
-
-            localService.alterarLocal(localOpt.get(), localDTO);
-
-            return ResponseEntity.noContent().build();
-
-        } catch (RegistroDuplicadoException ex) {
-            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-        }
+        localService.alterar(id, localDTO);
+        return ResponseEntity.noContent().build();
 
     }
 

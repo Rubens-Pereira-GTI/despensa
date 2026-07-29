@@ -41,33 +41,16 @@ public class CategoriaController {
     public ResponseEntity<Object> salvaCategoria(@RequestBody @Valid CategoriaDTO dto) {
 
         Categoria categoria = dto.toCategoria();
+        categoriaService.salvarCategoria(categoria);
 
-        try {
-
-            Optional<Local> localOpt = localService.buscarPorId(categoria.getLocalId());
-            if(localOpt.isEmpty()){
-                throw  new OperacaoNaoPermitidaException("local não existe");
-            }
-
-            categoria.setLocal(localOpt.get());
-            categoriaService.salvarCategoria(categoria);
-
-            URI location = ServletUriComponentsBuilder.
+        URI location = ServletUriComponentsBuilder.
                     fromCurrentRequest().
                     path("/{id}").
                     buildAndExpand(categoria.getId()).
                     toUri();
 
-            return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).build();
 
-        } catch (RegistroDuplicadoException ex){
-            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-
-        }catch (OperacaoNaoPermitidaException ex){
-            ErroResponse erroResponse = ErroResponse.naoEncontrado(ex.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-        }
     }
 
     @GetMapping("/{id}")
@@ -99,31 +82,9 @@ public class CategoriaController {
     ResponseEntity<Object> atualizaCategoria(@PathVariable Long id,
                                              @RequestBody @Valid CategoriaDTO dto){
 
-        Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(id);
-        if (categoriaOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        //TODO essa busca deve ser feita na camada Service
-        Optional<Local> localOpt = localService.buscarPorId(dto.localId());
-        if(localOpt.isEmpty()){
-            throw  new OperacaoNaoPermitidaException("local não existe");
-        }
+        categoriaService.atualizarCategoria(dto, id);
+        return ResponseEntity.noContent().build();
 
-        Categoria categoria = categoriaOpt.get();
-        categoria.setId(id);
-        categoria.setNome(dto.nome());
-        categoria.setDescricao(dto.descricao());
-        categoria.setLocalId(dto.localId());
-        categoria.setLocal(localOpt.get());
-
-        try {
-            categoriaService.atualizarCategoria(categoria);
-            return ResponseEntity.noContent().build();
-
-        }catch (RegistroDuplicadoException ex){
-            ErroResponse errResponse = ErroResponse.conflito(ex.getMessage());
-            return ResponseEntity.status(errResponse.status()).body(errResponse);
-        }
     }
 
     @DeleteMapping("/{id}")

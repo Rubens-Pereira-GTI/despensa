@@ -30,8 +30,12 @@ public class LocalService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Local> buscarPorId(Long id){
-        return localRepository.findById(id);
+    public Local buscarPorId(Long id){
+        Optional<Local> localOpt = localRepository.findById(id);
+        if(localOpt.isEmpty()){
+            throw new EntityNotFoundException("O local não existe");
+        }
+        return localOpt.get();
     }
 
     @Transactional(readOnly = true)
@@ -40,25 +44,28 @@ public class LocalService {
         return local;
     }
 
-    public Local salvarLocal(Local local){
+    public Local salvar(Local local){
         localValidator.validar(local);
         return localRepository.save(local);
     }
 
     @Transactional
-    public Local alterarLocal(Local local, LocalDTO dto){
-        Local localAtualizado = dto.toLocal();
-        localValidator.validar(localAtualizado);
-
-        local.setNome(localAtualizado.getNome());
-        local.setDescricao(localAtualizado.getDescricao());
-        local.setAtivo(localAtualizado.getAtivo());
-
+    public Local alterar(Long id, LocalDTO dto){
+        Optional<Local> localOpt = localRepository.findById(id);
+        if(localOpt.isEmpty()){
+            throw new EntityNotFoundException("Local não encontrado");
+        }
+        localValidator.validar(localOpt.get());
+        Local local = localOpt.get();
+        local.setNome(dto.nome());
+        local.setDescricao(dto.descricao());
+        local.setAtivo(dto.ativo());
         return localRepository.save(local);
     }
 
     @Transactional
-    public void deletar(Local local) {
+    public void deletar(Long id) {
+        Local local = buscarPorId(id);
         if(categoriaRepository.existsByLocal(local)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir o local com Categorias vinculadas");
         }
