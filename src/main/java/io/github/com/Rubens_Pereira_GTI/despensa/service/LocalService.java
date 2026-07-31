@@ -55,7 +55,9 @@ public class LocalService {
         if(localOpt.isEmpty()){
             throw new EntityNotFoundException("Local não encontrado");
         }
+
         localValidator.validar(localOpt.get());
+
         Local local = localOpt.get();
         local.setNome(dto.nome());
         local.setDescricao(dto.descricao());
@@ -66,6 +68,7 @@ public class LocalService {
     @Transactional
     public void deletar(Long id) {
         Local local = buscarPorId(id);
+
         if(categoriaRepository.existsByLocal(local)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir o local com Categorias vinculadas");
         }
