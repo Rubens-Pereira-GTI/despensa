@@ -65,6 +65,7 @@ public class LocalService {
         return localRepository.save(local);
     }
 
+    //TODO FIX criar um softdelet
     @Transactional
     public void deletar(Long id) {
         Local local = buscarPorId(id);
@@ -72,7 +73,7 @@ public class LocalService {
         if(categoriaRepository.existsByLocal(local)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir o local com Categorias vinculadas");
         }
-        localRepository.deleteById(local.getId());
+        local.setAtivo(false);
     }
 
 

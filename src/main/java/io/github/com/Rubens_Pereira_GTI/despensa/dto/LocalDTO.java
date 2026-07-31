@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public record LocalDTO(
 
         Long id,
@@ -17,7 +19,11 @@ public record LocalDTO(
         String descricao,
 
         @NotNull(message = "campo obrigatorio")
-        Boolean ativo
+        Boolean ativo,
+
+        LocalDateTime dataCriacao,
+
+        LocalDateTime dataAtualizacao
 
 ) {
     public Local toLocal(){
@@ -34,7 +40,9 @@ public record LocalDTO(
                 local.getId(),
                 local.getNome(),
                 local.getDescricao(),
-                local.getAtivo()
+                local.getAtivo(),
+                local.getDataCriacao(),
+                local.getDataAtualizacao()
         );
         return dto;
     }

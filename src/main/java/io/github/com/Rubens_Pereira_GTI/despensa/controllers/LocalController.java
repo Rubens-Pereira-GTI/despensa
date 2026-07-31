@@ -58,17 +58,12 @@ public class LocalController {
     public ResponseEntity<List<LocalDTO>> buscaTodosLocais() {
         List<Local> locais = localService.findAll();
 
-        List<LocalDTO> dtos = locais.stream().map(loc -> {
-            return new LocalDTO(
-                    loc.getId(),
-                    loc.getNome(),
-                    loc.getDescricao(),
-                    loc.getAtivo()
-            );
-        }).toList();
+        List<LocalDTO> dtos = locais.stream().map(LocalDTO::fromLocal).toList();
 
         return ResponseEntity.ok(dtos);
     }
+
+    //TODO fazer um get paginado
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleta(@PathVariable Long id) {

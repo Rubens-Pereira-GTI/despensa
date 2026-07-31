@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -132,7 +134,14 @@ class LocalServiceTest {
         localExistente.setDescricao("Desc Antiga");
         localExistente.setAtivo(true);
 
-        LocalDTO dto = new LocalDTO(id, "Nome Novo", "Desc Nova", false);
+        LocalDTO dto = new LocalDTO(
+                id,
+                "Nome Novo",
+                "Desc Nova",
+                false,
+                LocalDateTime.of(2026, 4, 1, 14, 0 ),
+                LocalDateTime.of(2026, 5, 15, 14, 30 )
+        );
 
         when(localRepository.findById(id)).thenReturn(Optional.of(localExistente));
         when(localRepository.save(localExistente)).thenReturn(localExistente);
@@ -150,7 +159,14 @@ class LocalServiceTest {
     @Test
     void deveLancarExcecaoAoAlterarLocalInexistente() {
         Long id = 99L;
-        LocalDTO dto = new LocalDTO(id, "Nome", "Desc", true);
+        LocalDTO dto = new LocalDTO(
+                id,
+                "Nome Novo",
+                "Desc Nova",
+                false,
+                LocalDateTime.of(2026, 4, 1, 14, 0 ),
+                LocalDateTime.of(2026, 5, 15, 14, 30 )
+        );
 
         when(localRepository.findById(id)).thenReturn(Optional.empty());
 
