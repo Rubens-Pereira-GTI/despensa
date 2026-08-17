@@ -1,12 +1,9 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.CategoriaValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,16 +20,13 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
     private final CategoriaValidator categoriaValidator;
     private final ProdutoRepository produtoRepository;
-    private final LocalRepository localRepository;
 
     public CategoriaService(CategoriaRepository categoriaRepository,
                             CategoriaValidator categoriaValidator,
-                            ProdutoRepository produtoRepository,
-                            LocalRepository localRepository) {
+                            ProdutoRepository produtoRepository) {
         this.categoriaRepository = categoriaRepository;
         this.categoriaValidator = categoriaValidator;
         this.produtoRepository = produtoRepository;
-        this.localRepository = localRepository;
     }
 
     @Transactional(readOnly = true)

@@ -1,11 +1,9 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
 
 public record LocalDTO(
 
@@ -19,31 +17,9 @@ public record LocalDTO(
         String descricao,
 
         @NotNull(message = "campo obrigatorio")
-        Boolean ativo,
+        Boolean ativo
 
-        LocalDateTime dataCriacao,
-
-        LocalDateTime dataAtualizacao
 
 ) {
-    public Local toLocal(){
-        Local local = new Local();
-        local.setId(this.id);
-        local.setNome(this.nome);
-        local.setDescricao(this.descricao);
-        local.setAtivo(this.ativo);
-        return  local;
-    }
-
-    public static LocalDTO fromLocal(Local local){
-        LocalDTO dto = new LocalDTO(
-                local.getId(),
-                local.getNome(),
-                local.getDescricao(),
-                local.getAtivo(),
-                local.getDataCriacao(),
-                local.getDataAtualizacao()
-        );
-        return dto;
-    }
+    
 }

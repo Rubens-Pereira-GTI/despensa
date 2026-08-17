@@ -1,38 +1,34 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
+import io.github.com.Rubens_Pereira_GTI.despensa.mapper.LocalMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/locais")
 public class LocalController {
 
-    private static final Logger log = LoggerFactory.getLogger(LocalController.class);
     private final LocalService localService;
+    private final LocalMapper localMapper;
 
-    public LocalController(LocalService localService) {
+    public LocalController(LocalService localService, LocalMapper localMapper) {
         this.localService = localService;
+        this.localMapper = localMapper;
     }
 
     @PostMapping
     public ResponseEntity<Object> salvar(@Valid @RequestBody LocalDTO localDTO) {
 
-        Local local = localDTO.toLocal();
+        Local local = localMapper.toEntity(localDTO);
 
         localService.salvar(local);
 
@@ -49,7 +45,7 @@ public class LocalController {
     @GetMapping("/{id}")
     public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id) {
         Local local = localService.buscarPorId(id);
-        LocalDTO localDTO = LocalDTO.fromLocal(local);
+        LocalDTO localDTO = localMapper.toDTO(local);
         return ResponseEntity.ok(localDTO);
     }
 
@@ -58,7 +54,7 @@ public class LocalController {
     public ResponseEntity<List<LocalDTO>> buscaTodosLocais() {
         List<Local> locais = localService.findAll();
 
-        List<LocalDTO> dtos = locais.stream().map(LocalDTO::fromLocal).toList();
+        List<LocalDTO> dtos = locais.stream().map(localMapper::toDTO).toList();
 
         return ResponseEntity.ok(dtos);
     }
@@ -73,7 +69,8 @@ public class LocalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> alterar(@Valid @RequestBody LocalDTO localDTO, @PathVariable Long id) {
-        localService.alterar(id, localDTO);
+        Local local = localMapper.toEntity(localDTO);
+        localService.alterar(id, local);
         return ResponseEntity.noContent().build();
 
     }

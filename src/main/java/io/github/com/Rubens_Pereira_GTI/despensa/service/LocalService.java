@@ -1,7 +1,5 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
@@ -50,22 +48,22 @@ public class LocalService {
     }
 
     @Transactional
-    public Local alterar(Long id, LocalDTO dto){
+    public Local alterar(Long id, Local localAlterado){
         Optional<Local> localOpt = localRepository.findById(id);
         if(localOpt.isEmpty()){
             throw new EntityNotFoundException("Local não encontrado");
         }
-
-        localValidator.validar(localOpt.get());
-
+        
         Local local = localOpt.get();
-        local.setNome(dto.nome());
-        local.setDescricao(dto.descricao());
-        local.setAtivo(dto.ativo());
+        local.setNome(localAlterado.getNome());
+        local.setDescricao(localAlterado.getDescricao());
+        local.setAtivo(localAlterado.getAtivo());
+
+        localValidator.validar(local);
         return localRepository.save(local);
     }
 
-    //TODO FIX criar um softdelet
+   
     @Transactional
     public void deletar(Long id) {
         Local local = buscarPorId(id);
