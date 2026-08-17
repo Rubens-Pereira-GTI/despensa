@@ -4,43 +4,33 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
+import io.github.com.Rubens_Pereira_GTI.despensa.mapper.CategoriaMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
-import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
-import io.github.com.Rubens_Pereira_GTI.despensa.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
-    private final LocalService localService;
+    private final CategoriaMapper categoriaMapper;
 
-    public CategoriaController(CategoriaService categoriaService, LocalService localService) {
+    public CategoriaController(CategoriaService categoriaService, CategoriaMapper categoriaMapper) {
         this.categoriaService = categoriaService;
-        this.localService = localService;
+        this.categoriaMapper = categoriaMapper;
     }
 
     @PostMapping
     public ResponseEntity<Object> salvaCategoria(@RequestBody @Valid CategoriaDTO dto) {
 
-        Categoria categoria = dto.toCategoria();
+        Categoria categoria = categoriaMapper.toEntity(dto);
         categoriaService.salvarCategoria(categoria);
 
         URI location = ServletUriComponentsBuilder.
@@ -54,7 +44,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> buscaCategoriaPorId(@PathVariable Long id){
+    public ResponseEntity<CategoriaResponseDto> buscaCategoriaPorId(@PathVariable Long id){
 
         Optional<Categoria> categoriaOpt = categoriaService.buscaCategoria(id);
         if(categoriaOpt.isEmpty()){
@@ -63,17 +53,17 @@ public class CategoriaController {
 
         Categoria categoria = categoriaOpt.get();
 
-        CategoriaDTO categoriaDTO = CategoriaDTO.toDTO(categoria);
+        CategoriaResponseDto categoriaDTO = categoriaMapper.toResponseDTO(categoria);
 
         return ResponseEntity.ok(categoriaDTO);
     }
 
     @GetMapping
-    ResponseEntity<List<CategoriaDTO>> buscarTodas(){
+    ResponseEntity<List<CategoriaResponseDto>> buscarTodas(){
 
         List<Categoria> categorias = categoriaService.buscarTodas();
 
-        List<CategoriaDTO> dtos = categorias.stream().map(CategoriaDTO::toDTO).toList();
+        List<CategoriaResponseDto> dtos = categorias.stream().map(cat -> categoriaMapper.toResponseDTO(cat)).toList();
 
         return ResponseEntity.ok(dtos);
     }
@@ -82,7 +72,8 @@ public class CategoriaController {
     ResponseEntity<Object> atualizaCategoria(@PathVariable Long id,
                                              @RequestBody @Valid CategoriaDTO dto){
 
-        categoriaService.atualizarCategoria(dto, id);
+        Categoria categoria = categoriaMapper.toEntity(dto);
+        categoriaService.atualizarCategoria(categoria, id);
         return ResponseEntity.noContent().build();
 
     }

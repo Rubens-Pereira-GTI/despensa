@@ -8,6 +8,8 @@ public record CategoriaResponseDto(
 
         String descricao,
 
-        Long localId
+        LocalDTO localDTO,
+
+        Boolean ativo
 ) {
 }

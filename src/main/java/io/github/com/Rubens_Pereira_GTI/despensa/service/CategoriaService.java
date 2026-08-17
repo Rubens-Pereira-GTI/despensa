@@ -35,13 +35,12 @@ public class CategoriaService {
         this.localRepository = localRepository;
     }
 
-    //abordagem utilizando o relacionamento entre os objetos  para pegar local
     @Transactional(readOnly = true)
     public Optional<Categoria> buscaCategoriaPorId(Long id){
 
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
 
-        if(categoriaOpt.isEmpty()){ //
+        if(categoriaOpt.isEmpty()){
             return categoriaOpt;
         }
 
@@ -61,39 +60,28 @@ public class CategoriaService {
            return categoriaOpt;
         }
         categoriaOpt.get().setLocalId(localId);
-
         return categoriaOpt;
     }
 
     public Categoria salvarCategoria(Categoria categoria) {
         categoriaValidator.validar(categoria);
-        Optional<Local> localOpt = localRepository.findById(categoria.getLocalId());
-        if(localOpt.isEmpty()){
-            throw new EntityNotFoundException("Local não existe");
-        }
-        categoria.setLocal(localOpt.get());
-
         return categoriaRepository.save(categoria);
     }
 
     @Transactional
-    public Categoria atualizarCategoria(CategoriaDTO dto, Long id) {
-
-        categoriaValidator.validar(dto.toCategoria());
+    public Categoria atualizarCategoria(Categoria categoriaAtualizada, Long id) { 
 
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         if (categoriaOpt.isEmpty()) throw new EntityNotFoundException("categoria não encontrada");
 
-        Optional<Local> localOpt = localRepository.findById(dto.localId());
-        if(localOpt.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
-
         Categoria categoria = categoriaOpt.get();
-        categoria.setId(id);
-        categoria.setNome(dto.nome());
-        categoria.setDescricao(dto.descricao());
-        categoria.setLocalId(dto.localId());
-        categoria.setLocal(localOpt.get());
-
+        categoria.setNome(categoriaAtualizada.getNome());
+        categoria.setDescricao(categoriaAtualizada.getDescricao());
+        categoria.setLocalId(categoriaAtualizada.getLocalId());
+        categoria.setLocal(categoriaAtualizada.getLocal());
+        categoria.setAtivo(categoriaAtualizada.getAtivo());
+        
+        categoriaValidator.validar(categoria);
         return categoriaRepository.save(categoria);
 
     }
@@ -103,8 +91,8 @@ public class CategoriaService {
         if(possuiProduto(categoria)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir categoria que está associada a um produto");
         }
-
-        categoriaRepository.deleteById(categoria.getId());
+        categoria.setAtivo(false);
+        categoriaRepository.save(categoria);
     }
 
     public boolean possuiProduto(Categoria categoria){

@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         return new ErroResponse(HttpStatus.UNPROCESSABLE_CONTENT.value(), "Erro de validação", erroCampos );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex){
         return ResponseEntity.notFound().build();
     }

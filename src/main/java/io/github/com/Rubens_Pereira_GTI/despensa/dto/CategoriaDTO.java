@@ -16,23 +16,12 @@ public record CategoriaDTO(
         String descricao,
 
         @NotNull
-        Long localId
+        Long localId,
+
+        @NotNull
+        Boolean ativo
 
 ) {
-    public Categoria toCategoria(){
-        Categoria categoria = new Categoria();
-        categoria.setId(this.id);
-        categoria.setNome(this.nome);
-        categoria.setDescricao(this.descricao);
-        categoria.setLocalId(this.localId);
-        return categoria;
-    }
+   
 
-    public static CategoriaDTO toDTO(Categoria categoria){
-        return new CategoriaDTO(
-                categoria.getId(),
-                categoria.getNome(),
-                categoria.getDescricao(),
-                categoria.getLocalId());
-    }
 }
