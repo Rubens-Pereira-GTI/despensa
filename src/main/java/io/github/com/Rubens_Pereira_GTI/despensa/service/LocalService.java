@@ -48,7 +48,7 @@ public class LocalService {
     }
 
     @Transactional
-    public Local alterar(Long id, Local localAlterado){
+    public Local alterarLocal(Long id, Local localAlterado){
         Local local = buscarPorId(id);
         
         localAlterado.setId(id);

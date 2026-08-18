@@ -72,7 +72,7 @@ public class LocalController {
         
         Local local = localMapper.toEntity(localDTO);
         
-        local = localService.alterar(id, local);
+        local = localService.alterarLocal(id, local);
 
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().

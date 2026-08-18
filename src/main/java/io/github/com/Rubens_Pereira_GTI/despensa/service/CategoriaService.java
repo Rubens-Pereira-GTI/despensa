@@ -53,10 +53,12 @@ public class CategoriaService {
     }
 
     @Transactional
-    public Categoria atualizarCategoria(Categoria categoriaAtualizada, Long id) { 
+    public Categoria alterarCategoria(Categoria categoriaAtualizada, Long id) { 
 
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         if (categoriaOpt.isEmpty()) throw new EntityNotFoundException("categoria não encontrada");
+        
+        categoriaValidator.validar(categoriaAtualizada);
 
         Categoria categoria = categoriaOpt.get();
         categoria.setNome(categoriaAtualizada.getNome());
@@ -65,7 +67,7 @@ public class CategoriaService {
         categoria.setLocal(categoriaAtualizada.getLocal());
         categoria.setAtivo(categoriaAtualizada.getAtivo());
         
-        categoriaValidator.validar(categoria);
+        
         return categoriaRepository.save(categoria);
 
     }

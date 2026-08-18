@@ -55,11 +55,11 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Object> atualizaCategoria(@PathVariable Long id,
+    ResponseEntity<Object> alterar(@PathVariable Long id,
                                              @RequestBody @Valid CategoriaDTO dto){
                                                 
         Categoria categoria = categoriaMapper.toEntity(dto);
-        categoriaService.atualizarCategoria(categoria, id);        
+        categoriaService.alterarCategoria(categoria, id);        
         return ResponseEntity.noContent().build();
 
     }

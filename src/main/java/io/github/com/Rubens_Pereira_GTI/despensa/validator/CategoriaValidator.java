@@ -24,7 +24,7 @@ public class CategoriaValidator {
 
     public boolean existeCategoriaCadastrada(Categoria categoria){
 
-        Optional<Categoria> categoriaOpt = categoriaRepository.findCategoriaByNome(categoria.getNome());
+        Optional<Categoria> categoriaOpt = categoriaRepository.findByNomeIgnoringCase(categoria.getNome());
 
         if(categoria.getId() == null){
             return categoriaOpt.isPresent();
