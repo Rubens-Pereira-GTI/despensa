@@ -49,18 +49,15 @@ public class LocalService {
 
     @Transactional
     public Local alterar(Long id, Local localAlterado){
-        Optional<Local> localOpt = localRepository.findById(id);
-        if(localOpt.isEmpty()){
-            throw new EntityNotFoundException("Local não encontrado");
-        }
+        Local local = buscarPorId(id);
         
-        Local local = localOpt.get();
+        localAlterado.setId(id);
+        localValidator.validar(localAlterado);
+
         local.setNome(localAlterado.getNome());
         local.setDescricao(localAlterado.getDescricao());
         local.setAtivo(localAlterado.getAtivo());
-
-        localValidator.validar(local);
-        return localRepository.save(local);
+        return local;
     }
 
    
@@ -71,6 +68,7 @@ public class LocalService {
         if(categoriaRepository.existsByLocal(local)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir o local com Categorias vinculadas");
         }
+
         local.setAtivo(false);
     }
 

@@ -4,6 +4,7 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
+import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.CategoriaValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,44 +21,33 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
     private final CategoriaValidator categoriaValidator;
     private final ProdutoRepository produtoRepository;
+    private final LocalRepository localRepository;
 
     public CategoriaService(CategoriaRepository categoriaRepository,
                             CategoriaValidator categoriaValidator,
-                            ProdutoRepository produtoRepository) {
+                            ProdutoRepository produtoRepository,
+                            LocalRepository localRepository) {
         this.categoriaRepository = categoriaRepository;
         this.categoriaValidator = categoriaValidator;
         this.produtoRepository = produtoRepository;
+        this.localRepository = localRepository;
     }
 
-    @Transactional(readOnly = true)
-    public Optional<Categoria> buscaCategoriaPorId(Long id){
-
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-
-        if(categoriaOpt.isEmpty()){
-            return categoriaOpt;
-        }
-
-        Local local = categoriaOpt.get().getLocal();
-        categoriaOpt.get().setLocalId(local.getId());
-
-        return categoriaOpt;
-    }
 
     @Transactional(readOnly = true)
-    public Optional<Categoria> buscaCategoria(Long id){
+    public Categoria buscaCategoriaPorId(Long id){
 
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-        Long localId = categoriaRepository.findLocalIdByCategoriaId(id);
-
         if(categoriaOpt.isEmpty()){
-           return categoriaOpt;
+           throw new EntityNotFoundException("Categoria não encontrada");
         }
-        categoriaOpt.get().setLocalId(localId);
-        return categoriaOpt;
+        return categoriaOpt.get();
     }
 
     public Categoria salvarCategoria(Categoria categoria) {
+        Optional<Local> localOptional = localRepository.findById(categoria.getLocalId());
+        if(localOptional.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
+        categoria.setLocal(localOptional.get());
         categoriaValidator.validar(categoria);
         return categoriaRepository.save(categoria);
     }
@@ -80,7 +70,11 @@ public class CategoriaService {
 
     }
 
-    public void deletar(Categoria categoria) {
+    public void deletar(Long id) {
+
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+        if(categoriaOpt.isEmpty()) throw new EntityNotFoundException("Categoria não encontrada");
+        Categoria categoria = categoriaOpt.get();
 
         if(possuiProduto(categoria)){
             throw new OperacaoNaoPermitidaException("Não é permitido excluir categoria que está associada a um produto");

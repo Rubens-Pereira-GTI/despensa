@@ -23,3 +23,27 @@ databaseChangeLog:
           relativeToChangelogFile: true
           splitStatements: true
           stripComments: true
+- changeSet:
+      id: 02-cria-tabelas-da-despensa
+      author: Rubens Pereira
+      changes:
+      - sqlFile:
+          dbms: postgresql
+          encoding: utf8
+          endDelimiter: \n/\s*\n|\n/\s*$
+          path: scripts/02-adiciona-coluna-categoria-id.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+- changeSet:
+      id: 03-remove-coluna-categoria-id
+      author: Rubens Pereira
+      changes:
+      - sqlFile:
+          dbms: postgresql
+          encoding: utf8
+          endDelimiter: \n/\s*\n|\n/\s*$
+          path: scripts/03-remove-coluna-categoria-id.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true

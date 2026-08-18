@@ -3,15 +3,18 @@ package io.github.com.Rubens_Pereira_GTI.despensa.validator;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
 public class ProdutoValidator {
-    @Autowired
+    
     private ProdutoRepository produtoRepository;
+
+    public ProdutoValidator(ProdutoRepository produtoRepository){
+        this.produtoRepository = produtoRepository;
+    }
 
     public void validar(Produto produto){
         if(existeProdutoCadastrado(produto)){

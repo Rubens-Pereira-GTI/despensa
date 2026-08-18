@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface LocalRepository extends JpaRepository<Local, Long> {
 
-    Optional<Local> findByNome(String nome);
+    Optional<Local> findByNomeIgnoringCase(String nome);
+
+    List<Local> findLocalByCategorias(List<Categoria> categorias);
 
 }
 

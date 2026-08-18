@@ -24,9 +24,8 @@ public class LocalValidator {
         }
     }
 
-
     private boolean existeLocalCadastrado(Local local){
-        Optional<Local> localOpt = localRepository.findByNome(local.getNome());
+        Optional<Local> localOpt = localRepository.findByNomeIgnoringCase(local.getNome());
 
         //se o local é novo (post)
         if(local.getId() == null){

@@ -49,18 +49,7 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
         Produto produto = produtoOpt.get();
-        ProdutoDTO dto = new ProdutoDTO(
-                produto.getId(),
-                produto.getNome(),
-                produto.getDescricao(),
-                produto.getEstoqueMinimo(),
-                produto.isAtivo(),
-                produto.getCategoriaId(),
-                produto.getLocalId(),
-                produto.getLocalizacao(),
-                produto.getDataDeCriacao(),
-                produto.getDataAtualizacao()
-        );
+        ProdutoDTO dto = produtoMapper.toDTO(produto);
         return ResponseEntity.ok(dto);
     }
 

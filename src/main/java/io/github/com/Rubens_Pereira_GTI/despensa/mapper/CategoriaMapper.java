@@ -3,21 +3,14 @@ package io.github.com.Rubens_Pereira_GTI.despensa.mapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
-import jakarta.persistence.EntityNotFoundException;
-
-import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 
 @Component
 public class CategoriaMapper {
-    private final LocalRepository localRepository;
+   
     private final LocalMapper localMapper;
 
-    public CategoriaMapper(LocalRepository localRepository, LocalMapper localMapper){
-        this.localRepository = localRepository;
+    public CategoriaMapper(LocalMapper localMapper){
         this.localMapper = localMapper;
     }
 
@@ -25,15 +18,12 @@ public class CategoriaMapper {
         if (dto == null) {
             return null;
         }
-        Optional<Local> localOptional = localRepository.findById(dto.localId());
-        if(localOptional.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
         
         Categoria categoria = new Categoria();
         categoria.setId(dto.id());
         categoria.setNome(dto.nome());
         categoria.setDescricao(dto.descricao());
         categoria.setLocalId(dto.localId());
-        categoria.setLocal(localOptional.get());
         categoria.setAtivo(dto.ativo());
         return categoria;
     }

@@ -1,6 +1,5 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(schema = "social", name = "categoria")
+@Table(name = "categoria")
 public class Categoria {
 
     @Id
@@ -24,7 +23,6 @@ public class Categoria {
     @Column
     private String descricao;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
     private List<Produto> produtos;
 

@@ -57,7 +57,8 @@ public class ProdutoService {
     }
 
     public void deletar(Produto produto) {
-        produtoRepository.delete(produto);
+        produto.setAtivo(false);
+        produtoRepository.save(produto);
     }
 
 

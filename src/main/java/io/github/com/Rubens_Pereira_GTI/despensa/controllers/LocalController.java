@@ -30,7 +30,7 @@ public class LocalController {
 
         Local local = localMapper.toEntity(localDTO);
 
-        localService.salvar(local);
+        local = localService.salvar(local);
 
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
@@ -69,15 +69,18 @@ public class LocalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> alterar(@Valid @RequestBody LocalDTO localDTO, @PathVariable Long id) {
-               
+        
         Local local = localMapper.toEntity(localDTO);
+        
+        local = localService.alterar(id, local);
+
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
                 buildAndExpand(local.getId()).
                 toUri();
+
                 
-        localService.alterar(id, local);
         return ResponseEntity.created(location).build();
 
     }
