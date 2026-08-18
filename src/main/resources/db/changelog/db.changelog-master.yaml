@@ -1,1 +1,25 @@
 databaseChangeLog:
+- changeSet:
+      id: 00-initial-config
+      author: Rubens Pereira
+      changes:
+      - sqlFile:
+          dbms: postgresql
+          encoding: utf8
+          endDelimiter: \n/\s*\n|\n/\s*$
+          path: scripts/00-initial-config.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+- changeSet:
+      id: 01-cria-tabelas-da-despensa
+      author: Rubens Pereira
+      changes:
+      - sqlFile:
+          dbms: postgresql
+          encoding: utf8
+          endDelimiter: \n/\s*\n|\n/\s*$
+          path: scripts/01-cria-tabelas-da-despensa.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true

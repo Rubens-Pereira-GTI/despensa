@@ -5,8 +5,8 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
+import io.github.com.Rubens_Pereira_GTI.despensa.mapper.ProdutoMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
-import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.ProdutoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,32 +20,18 @@ import java.util.Optional;
 public class ProdutoController {
 
     private final ProdutoService produtoService;
-    private final CategoriaService categoriaService;
-    private final LocalService localService;
+    private final ProdutoMapper produtoMapper;
 
-    public ProdutoController(ProdutoService produtoService, CategoriaService categoriaService, LocalService localService){
+    public ProdutoController(ProdutoService produtoService, ProdutoMapper produtoMapper){
         this.produtoService = produtoService;
-        this.categoriaService = categoriaService;
-        this.localService = localService;
+        this.produtoMapper = produtoMapper;
     }
 
     @PostMapping
     public ResponseEntity<Object> salvarProduto(@Valid @RequestBody ProdutoDTO dto){
 
-        Produto produto = dto.toProduto();
-        //TODO categoriaId e local id não estão sendo persistidos
-        Optional<Categoria> categoriaOpt = categoriaService.buscaCategoriaPorId(produto.getCategoriaId());
-        //Optional<Local> localOpt = localService.buscarPorId(produto.getLocalId());
-
-        produto.setCategoria(categoriaOpt.get());
-        try{
-            produtoService.salvarProduto(produto);
-
-        }catch (RegistroDuplicadoException ex){
-            ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-        }
-
+        Produto produto = produtoMapper.toEntity(dto);
+        produtoService.salvarProduto(produto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -71,7 +57,9 @@ public class ProdutoController {
                 produto.isAtivo(),
                 produto.getCategoriaId(),
                 produto.getLocalId(),
-                produto.getLocalizacao()
+                produto.getLocalizacao(),
+                produto.getDataDeCriacao(),
+                produto.getDataAtualizacao()
         );
         return ResponseEntity.ok(dto);
     }

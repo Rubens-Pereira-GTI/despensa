@@ -1,18 +1,13 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(schema = "social", name = "unidade_medida")
+@Table(name = "unidade_medida")
 public class UnidadeMedida {
 
     @Id

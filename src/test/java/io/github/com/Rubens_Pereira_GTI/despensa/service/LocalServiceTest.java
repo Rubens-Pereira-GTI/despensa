@@ -134,19 +134,15 @@ class LocalServiceTest {
         localExistente.setDescricao("Desc Antiga");
         localExistente.setAtivo(true);
 
-        LocalDTO dto = new LocalDTO(
-                id,
-                "Nome Novo",
-                "Desc Nova",
-                false,
-                LocalDateTime.of(2026, 4, 1, 14, 0 ),
-                LocalDateTime.of(2026, 5, 15, 14, 30 )
-        );
+        Local localAlterado = new Local();
+        localAlterado.setNome("Nome Novo");
+        localAlterado.setDescricao("Desc Nova");
+        localAlterado.setAtivo(false);
 
         when(localRepository.findById(id)).thenReturn(Optional.of(localExistente));
         when(localRepository.save(localExistente)).thenReturn(localExistente);
 
-        Local resultado = localService.alterar(id, dto);
+        Local resultado = localService.alterar(id, localAlterado);
 
         assertNotNull(resultado);
         assertEquals("Nome Novo", resultado.getNome());
@@ -159,19 +155,15 @@ class LocalServiceTest {
     @Test
     void deveLancarExcecaoAoAlterarLocalInexistente() {
         Long id = 99L;
-        LocalDTO dto = new LocalDTO(
-                id,
-                "Nome Novo",
-                "Desc Nova",
-                false,
-                LocalDateTime.of(2026, 4, 1, 14, 0 ),
-                LocalDateTime.of(2026, 5, 15, 14, 30 )
-        );
+        Local localAlterado = new Local();
+        localAlterado.setNome("Nome Novo");
+        localAlterado.setDescricao("Desc Nova");
+        localAlterado.setAtivo(false);
 
         when(localRepository.findById(id)).thenReturn(Optional.empty());
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> localService.alterar(id, dto));
+                () -> localService.alterar(id, localAlterado));
 
         assertEquals("Local não encontrado", exception.getMessage());
         verify(localRepository).findById(id);

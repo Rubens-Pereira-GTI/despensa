@@ -8,6 +8,8 @@ import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.ProdutoValidator;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,15 +44,10 @@ public class ProdutoService {
     @Transactional
     public Optional<Produto> buscarProduto(Long id) {
         Optional<Produto> produtoOpt = produtoRepository.findById(id);
-        if(produtoOpt.isEmpty()) return produtoOpt;
+        //TODO colocar o EntityNotFoundException na classe global
+        if(produtoOpt.isEmpty()) throw new EntityNotFoundException("Produto não encontrado");
+        
 
-        //TODO fazer uam abstração
-        if(produtoOpt.get().getCategoria() != null){
-            produtoOpt.get().setCategoriaId(produtoOpt.get().getCategoria().getId());
-            if(produtoOpt.get().getCategoria().getLocal() != null){
-                produtoOpt.get().setLocalId(produtoOpt.get().getCategoria().getLocal().getId());
-            }
-        }
         return produtoOpt;
     }
 

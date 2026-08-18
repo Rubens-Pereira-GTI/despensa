@@ -1,16 +1,16 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(schema = "social", name = "produto")
+@Table(name = "produto")
 public class Produto {
 
     @Id
@@ -24,12 +24,15 @@ public class Produto {
     @PositiveOrZero(message = "O campo estoque minimo deve ser 0 ou positivo")
     private BigDecimal estoqueMinimo;
 
+    @NotNull(message = "campo ativo obrigatório")
     @Column(nullable = false)
     private boolean ativo = true;
 
+    @NotNull(message = "campo data de criacao obrigatório")
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataDeCriacao;
 
+    @NotNull(message = "campo data de atualização obrigatório")
     @Column(name = "data_atualizacao", nullable = false, updatable = false)
     private LocalDateTime dataAtualizacao;
 
@@ -44,6 +47,8 @@ public class Produto {
     @Transient
     private Long categoriaId;
 
+    //TODO colocar not null tb no Banco, fazer script para atualizar o banco
+    @NotNull(message = "campo unidade de medida obrigatório")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unidade_medida_id")
     private UnidadeMedida unidadeMedida;
@@ -54,6 +59,7 @@ public class Produto {
     @Transient
     private Long localId;
 
+    @Size(max = 255, message = "campo localizacao deve ter no máximo 255 caracteres")
     private String localizacao;
 
     @PrePersist

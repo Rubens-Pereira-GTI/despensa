@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(schema = "social", name = "local")
+@Table(name = "local")
 public class Local {
 
     @Id

@@ -1,32 +1,38 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 
-
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public record ProdutoDTO(
         Long id,
-        @NotBlank String nome,
+
+        @NotBlank(message = "campo nome obrigatório")
+        @Size(max = 100)
+        String nome,
+
+        @Size(max = 255)
         String descricao,
-        @NotNull BigDecimal estoqueMinimo,
-        @NotNull Boolean ativo,
+
+        @NotNull(message = "campo estoque mínimo obrigatório")
+        BigDecimal estoqueMinimo,
+        
+        @NotNull(message = "campo ativo obrigatório")
+        Boolean ativo,
+
+        @NotNull(message = "campo categoria obrigatório")
         Long categoriaId,
+        
+        @NotNull(message = "campo local obrigatório")
         Long localId,
-        String localizacao
+
+        String localizacao,
+        LocalDateTime dataCriacao,
+        LocalDateTime dataAtualizacao
 
 ) {
-    public Produto toProduto(){
-        Produto produto = new Produto();
-        produto.setId(this.id);
-        produto.setNome(this.nome);
-        produto.setDescricao(this.descricao);
-        produto.setAtivo(this.ativo);
-        produto.setCategoriaId(this.categoriaId);
-        produto.setLocalId(this.localId);
-        produto.setLocalizacao(this.localizacao);
-        return  produto;
-    }
+
 }

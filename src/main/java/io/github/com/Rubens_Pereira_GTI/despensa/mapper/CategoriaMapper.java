@@ -59,9 +59,6 @@ public class CategoriaMapper {
         if (entity == null) {
             return null;
         }
-        Long localId = entity.getLocalId() != null 
-                ? entity.getLocalId() 
-                : (entity.getLocal() != null ? entity.getLocal().getId() : null);
 
         return new CategoriaResponseDto(
                 entity.getId(),
