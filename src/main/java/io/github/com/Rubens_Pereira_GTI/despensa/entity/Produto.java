@@ -40,7 +40,7 @@ public class Produto {
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
     private List<Estoque> estoques;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
@@ -49,7 +49,7 @@ public class Produto {
 
     //TODO colocar not null tb no Banco, fazer script para atualizar o banco
     @NotNull(message = "campo unidade de medida obrigatório")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "unidade_medida_id")
     private UnidadeMedida unidadeMedida;
 

@@ -5,11 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public record ProdutoDTO(
-        Long id,
-
+        
         @NotBlank(message = "campo nome obrigatório")
         @Size(max = 100)
         String nome,
@@ -32,9 +30,7 @@ public record ProdutoDTO(
         @NotNull(message = "campo unidade de medida obrigatório")
         Long unidadeMedidaId,
 
-        String localizacao,
-        LocalDateTime dataCriacao,
-        LocalDateTime dataAtualizacao
+        String localizacao
 
 ) {
 

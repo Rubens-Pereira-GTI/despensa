@@ -43,7 +43,7 @@ public class LocalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LocalDTO> buscarLocalPorId(@PathVariable Long id) {
+    public ResponseEntity<LocalDTO> buscarPorId(@PathVariable Long id) {
         Local local = localService.buscarPorId(id);
         LocalDTO localDTO = localMapper.toDTO(local);
         return ResponseEntity.ok(localDTO);
@@ -51,7 +51,7 @@ public class LocalController {
 
 
     @GetMapping
-    public ResponseEntity<List<LocalDTO>> buscaTodosLocais() {
+    public ResponseEntity<List<LocalDTO>> buscarTodosLocais() {
         List<Local> locais = localService.findAll();
 
         List<LocalDTO> dtos = locais.stream().map(localMapper::toDTO).toList();
@@ -62,7 +62,7 @@ public class LocalController {
     //TODO fazer um get paginado
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleta(@PathVariable Long id) {
+    public ResponseEntity<Object> deletar(@PathVariable Long id) {
         localService.deletar(id);
         return ResponseEntity.noContent().build();
     }

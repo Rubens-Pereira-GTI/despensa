@@ -1,29 +1,19 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.mapper;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
-import jakarta.persistence.EntityNotFoundException;
 
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProdutoMapper {
 
-    private final CategoriaRepository categoriaRepository;
-    private final UnidadeMedidaRepository unidadeMedidaRepository;
-    
+    private final CategoriaMapper categoriaMapper;
 
-    public ProdutoMapper(CategoriaRepository categoriaRepository, UnidadeMedidaRepository unidadeMedidaRepository){
-        this.categoriaRepository = categoriaRepository;
-        this.unidadeMedidaRepository = unidadeMedidaRepository;
+    public ProdutoMapper(CategoriaMapper categoriaMapper) {
+        this.categoriaMapper = categoriaMapper;
     }
 
     public Produto toEntity(ProdutoDTO dto) {
@@ -31,29 +21,18 @@ public class ProdutoMapper {
             return null;
         }
 
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(dto.categoriaId());
-        if(categoriaOpt.isEmpty()) throw new EntityNotFoundException("Categoria não encontrada");
-        Categoria categoria = categoriaOpt.get();
-
-        Optional<UnidadeMedida> unidadeMedidaOpt = unidadeMedidaRepository.findById(dto.unidadeMedidaId());
-        if(unidadeMedidaOpt.isEmpty()) throw new EntityNotFoundException("Unidade de medida não encontrada");
-        UnidadeMedida unidadeMedida = unidadeMedidaOpt.get();
-
         Produto produto = new Produto();
-        produto.setId(dto.id());
         produto.setNome(dto.nome());
         produto.setDescricao(dto.descricao());
         produto.setEstoqueMinimo(dto.estoqueMinimo());
         if (dto.ativo() != null) {
             produto.setAtivo(dto.ativo());
         }
-        produto.setUnidadeMedida(unidadeMedida);
         produto.setCategoriaId(dto.categoriaId());
-        produto.setCategoria(categoria);
         produto.setLocalId(dto.localId());
+        produto.setUnidadeMedidaId(dto.unidadeMedidaId());
         produto.setLocalizacao(dto.localizacao());
-        produto.setDataDeCriacao(dto.dataCriacao());
-        produto.setDataAtualizacao(dto.dataAtualizacao());
+
 
         return produto;
     }
@@ -64,17 +43,29 @@ public class ProdutoMapper {
         }
 
         return new ProdutoDTO(
-                entity.getId(),
                 entity.getNome(),
                 entity.getDescricao(),
                 entity.getEstoqueMinimo(),
                 entity.isAtivo(),
-                entity.getCategoriaId() != null ? entity.getCategoriaId() : (entity.getCategoria() != null ? entity.getCategoria().getId() : null),
+                entity.getCategoriaId(),
                 entity.getLocalId(),
                 entity.getUnidadeMedidaId(),
-                entity.getLocalizacao(),
-                entity.getDataDeCriacao(),
-                entity.getDataAtualizacao()
+                entity.getLocalizacao()
+        );
+    }
+
+    public ProdutoResponse toProdutoResponse(Produto produto){
+        return new ProdutoResponse(
+            produto.getId(),
+            produto.getNome(),
+            produto.getDescricao(),
+            produto.getEstoqueMinimo(),
+            produto.isAtivo(),
+            categoriaMapper.toDTO(produto.getCategoria()),
+            produto.getUnidadeMedida(),
+            produto.getLocalizacao(),
+            produto.getDataDeCriacao(),
+            produto.getDataAtualizacao()
         );
     }
 }

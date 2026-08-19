@@ -3,6 +3,9 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -36,7 +39,7 @@ public class UnidadeMedida {
     @Column(nullable = false, unique = true, updatable = false)
     private LocalDateTime dataAtualizacao;
 
-    //@JsonIgnore
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
     //@JsonIgnoreProperties("unidadeMedida")
     private List<Produto> listaProdutos;

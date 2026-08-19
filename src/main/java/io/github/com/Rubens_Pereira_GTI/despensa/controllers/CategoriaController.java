@@ -25,7 +25,7 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> salvaCategoria(@RequestBody @Valid CategoriaDTO dto) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid CategoriaDTO dto) {
 
         Categoria categoria = categoriaMapper.toEntity(dto);
         categoriaService.salvarCategoria(categoria);
@@ -41,7 +41,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaResponseDto> buscaCategoriaPorId(@PathVariable Long id){
+    public ResponseEntity<CategoriaResponseDto> buscaPorId(@PathVariable Long id){
         Categoria categoria = categoriaService.buscaCategoriaPorId(id);
         CategoriaResponseDto categoriaDTO = categoriaMapper.toResponseDTO(categoria);
         return ResponseEntity.ok(categoriaDTO);
@@ -65,7 +65,7 @@ public class CategoriaController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Object> deletaCategoria(@PathVariable Long id){
+    ResponseEntity<Object> deletar(@PathVariable Long id){
         categoriaService.deletar(id);
         return ResponseEntity.noContent().build();
 
