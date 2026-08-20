@@ -1,22 +1,15 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.ErroResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponse;
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.RegistroDuplicadoException;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.ProdutoMapper;
-import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.ProdutoService;
-
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

@@ -2,6 +2,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.mapper;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResponseDto;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.CategoriaResumoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +57,16 @@ public class CategoriaMapper {
                 entity.getDescricao(),
                 localMapper.toDTO(entity.getLocal()),
                 entity.getAtivo()
+        );
+    }
+
+    public CategoriaResumoDTO toResumoDTO(Categoria entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new CategoriaResumoDTO(
+                entity.getId(),
+                entity.getNome()
         );
     }
 }

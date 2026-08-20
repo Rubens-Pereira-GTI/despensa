@@ -1,22 +1,21 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
+import jakarta.validation.constraints.NotBlank;
 
 public record ProdutoResponse(
 
     Long id,
+    @NotBlank(message = "Nome é obrigatório")
     String nome,
     String descricao,
+    @NotBlank(message = "Estoque mínimo é obrigatório")
     BigDecimal estoqueMinimo,
     Boolean ativo,
-    CategoriaDTO categoria,
-    UnidadeMedida unidadeMedida, //TODO fazer dto de unidadeMedida e local
-    String localizacao,
-    LocalDateTime dataDeCriacao,
-    LocalDateTime dataAtualizacao
+    CategoriaResumoDTO categoria,
+    UnidadeMedidaDTO unidadeMedida, //TODO fazer dto de unidadeMedida e local
+    String localizacao
     
 ) {
     

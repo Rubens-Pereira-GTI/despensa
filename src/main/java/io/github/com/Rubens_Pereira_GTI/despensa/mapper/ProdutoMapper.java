@@ -11,9 +11,11 @@ import org.springframework.stereotype.Component;
 public class ProdutoMapper {
 
     private final CategoriaMapper categoriaMapper;
+    private final UnidadeMedidaMapper unidadeMedidaMapper;
 
-    public ProdutoMapper(CategoriaMapper categoriaMapper) {
+    public ProdutoMapper(CategoriaMapper categoriaMapper, UnidadeMedidaMapper unidadeMedidaMapper) {
         this.categoriaMapper = categoriaMapper;
+        this.unidadeMedidaMapper = unidadeMedidaMapper;
     }
 
     public Produto toEntity(ProdutoDTO dto) {
@@ -55,17 +57,16 @@ public class ProdutoMapper {
     }
 
     public ProdutoResponse toProdutoResponse(Produto produto){
+        
         return new ProdutoResponse(
             produto.getId(),
             produto.getNome(),
             produto.getDescricao(),
             produto.getEstoqueMinimo(),
             produto.isAtivo(),
-            categoriaMapper.toDTO(produto.getCategoria()),
-            produto.getUnidadeMedida(),
-            produto.getLocalizacao(),
-            produto.getDataDeCriacao(),
-            produto.getDataAtualizacao()
+            categoriaMapper.toResumoDTO(produto.getCategoria()),
+            unidadeMedidaMapper.toDTO(produto.getUnidadeMedida()),
+            produto.getLocalizacao()
         );
     }
 }
