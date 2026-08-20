@@ -1,17 +1,16 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
-import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
-import io.github.com.Rubens_Pereira_GTI.despensa.mapper.ProdutoMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.ProdutoValidator;
 import jakarta.persistence.EntityNotFoundException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class ProdutoService {
 
 
-    private final ProdutoMapper produtoMapper;
     private final ProdutoRepository produtoRepository;
     private final UnidadeMedidaRepository unidadeMedidaRepository;
     private final CategoriaRepository categoriaRepository;
@@ -30,14 +28,12 @@ public class ProdutoService {
     public ProdutoService(ProdutoRepository produtoRepository,
                           CategoriaRepository categoriaRepository,
                           UnidadeMedidaRepository unidadeMedidaRepository,
-                          ProdutoValidator produtoValidator, 
-                          ProdutoMapper produtoMapper){
+                          ProdutoValidator produtoValidator){
 
         this.produtoRepository = produtoRepository;
         this.unidadeMedidaRepository = unidadeMedidaRepository;
         this.categoriaRepository = categoriaRepository;
         this.produtoValidator = produtoValidator;
-        this.produtoMapper = produtoMapper;
     }
 
     public Produto salvarProduto(Produto produto){        
@@ -67,6 +63,12 @@ public class ProdutoService {
         return produtoOpt.get();
     }
 
+    public Page<Produto> buscarTodos(Integer page, Integer size, String sort) {
+        Sort ordenacao = Sort.by(sort);
+        PageRequest pageable = PageRequest.of(page, size, ordenacao);
+        return produtoRepository.findAll(pageable);
+    }
+
     @Transactional
     public Produto atualizar(Produto proAtualizado, Long id) {
 
@@ -89,6 +91,9 @@ public class ProdutoService {
     }
 
     public void deletar(Produto produto) {
+        if(!produtoRepository.existsById(produto.getId())){
+            throw new EntityNotFoundException("Produto não encontrado");
+        }
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }

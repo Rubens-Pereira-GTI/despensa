@@ -5,11 +5,15 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.ProdutoMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.ProdutoService;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,7 +25,8 @@ public class ProdutoController {
     private final ProdutoService produtoService;
     private final ProdutoMapper produtoMapper;
 
-    public ProdutoController(ProdutoService produtoService, ProdutoMapper produtoMapper){
+    public ProdutoController(ProdutoService produtoService, 
+                            ProdutoMapper produtoMapper){
         this.produtoService = produtoService;
         this.produtoMapper = produtoMapper;
     }
@@ -49,14 +54,14 @@ public class ProdutoController {
     }
     
     @GetMapping
-    public ResponseEntity<ProdutoResponse> buscasTodos(@RequestParam Integer page, 
-                                                        @RequestParam Integer size,
-                                                        @RequestParam String sort)
+    public ResponseEntity<List<ProdutoResponse>> buscasTodos(@RequestParam(required = false, defaultValue = "0") Integer page, 
+                                                        @RequestParam(required = false, defaultValue = "10") Integer size,
+                                                        @RequestParam(required = false, defaultValue = "nome") String sort)
     {
-        
+        Page<Produto> buscarTodos = produtoService.buscarTodos(page, size, sort);
+        List<ProdutoResponse> list = buscarTodos.stream().map(p -> produtoMapper.toProdutoResponse(p)).toList();
 
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(list);
     }
     
 
