@@ -8,7 +8,6 @@ import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.CategoriaValidator;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -17,8 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -124,6 +121,6 @@ public class CategoriaService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return categoriaRepository.findAll(example,pageable);
+        return categoriaRepository.findAll(example, pageable);
     }
 }
