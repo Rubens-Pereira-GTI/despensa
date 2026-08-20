@@ -13,5 +13,6 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
 
     List<Local> findLocalByCategorias(List<Categoria> categorias);
 
+
 }
 

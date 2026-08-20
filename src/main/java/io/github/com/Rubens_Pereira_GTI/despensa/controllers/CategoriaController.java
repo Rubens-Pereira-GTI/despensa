@@ -6,11 +6,12 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.CategoriaMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.CategoriaService;
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/categorias")
@@ -48,9 +49,17 @@ public class CategoriaController {
     }
 
     @GetMapping
-    ResponseEntity<List<CategoriaResponseDto>> buscarTodas(){
-        List<Categoria> categorias = categoriaService.buscarTodas();
-        List<CategoriaResponseDto> dtos = categorias.stream().map(cat -> categoriaMapper.toResponseDTO(cat)).toList();
+    ResponseEntity<Page<CategoriaResponseDto>> buscarTodasPorLocal(                                 
+                                    @RequestParam(name = "local_id") Long localId,
+                                    @RequestParam(required = false, defaultValue = "0") int page,
+                                    @RequestParam(required = false, defaultValue = "10") int size,
+                                    @RequestParam(required = false, defaultValue = "id") String sortField,
+                                    @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+                                    @RequestParam(required = false, defaultValue = "true") boolean ativo,
+                                    @RequestParam(required = false, defaultValue = "") String nome
+                                ){                                    
+        Page<Categoria> categorias = categoriaService.pesquisaPaginada(localId, page, size, sortField, sortOrder, ativo, nome);
+        Page<CategoriaResponseDto> dtos = categorias.map(cat -> categoriaMapper.toResponseDTO(cat));        
         return ResponseEntity.ok(dtos);
     }
 
