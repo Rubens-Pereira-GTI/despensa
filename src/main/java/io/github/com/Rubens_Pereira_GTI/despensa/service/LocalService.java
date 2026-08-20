@@ -6,10 +6,14 @@ import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.LocalValidator;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,9 +41,22 @@ public class LocalService {
     }
 
     @Transactional(readOnly = true)
-    public List<Local> findAll(){
-        List<Local> local = localRepository.findAll();
-        return local;
+    public Page<Local> locaisFiltroados(Boolean ativo, String nome, Integer page, Integer size){
+        
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        Local local = new Local();
+        local.setAtivo(ativo);
+        local.setNome(nome);
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withIgnoreNullValues()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        
+        Example<Local> example = Example.of(local, exampleMatcher);
+
+        return localRepository.findAll(example, pageRequest);
     }
 
     public Local salvar(Local local){

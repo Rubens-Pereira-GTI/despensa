@@ -5,6 +5,8 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.LocalMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -49,17 +51,18 @@ public class LocalController {
         return ResponseEntity.ok(localDTO);
     }
 
-
     @GetMapping
-    public ResponseEntity<List<LocalDTO>> buscarTodosLocais() {
-        List<Local> locais = localService.findAll();
+    public ResponseEntity<Page<LocalDTO>> locaisFiltroados(
+            @RequestParam(required = true) Boolean ativo, 
+            @RequestParam(required = false) String nome,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
 
-        List<LocalDTO> dtos = locais.stream().map(localMapper::toDTO).toList();
-
+    ) {
+        Page<Local> locais = localService.locaisFiltroados(ativo, nome, page, size);
+        Page<LocalDTO> dtos = locais.map(localMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }
-
-    //TODO fazer um get paginado
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletar(@PathVariable Long id) {
