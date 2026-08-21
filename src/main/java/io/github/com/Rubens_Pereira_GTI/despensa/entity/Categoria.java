@@ -23,8 +23,8 @@ public class Categoria {
     @Column
     private String descricao;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
-    private List<Produto> produtos;
+    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
+    //private List<Produto> produtos;
 
     @ManyToOne
     @JoinColumn(name = "local_id")
@@ -82,13 +82,13 @@ public class Categoria {
         this.descricao = descricao;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
-    }
+    // public List<Produto> getProdutos() {
+    //     return produtos;
+    // }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
-    }
+    // public void setProdutos(List<Produto> produtos) {
+    //     this.produtos = produtos;
+    // }
 
     public Local getLocal() {
         return local;

@@ -11,6 +11,5 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
     boolean existsByLocal(Local local);
 
-
-
 }
+

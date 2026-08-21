@@ -41,19 +41,17 @@ public class LocalService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Local> locaisFiltroados(Boolean ativo, String nome, Integer page, Integer size){
+    public Page<Local> pesquisaPaginada(Boolean ativo, String nome, Integer page, Integer size){
         
-        PageRequest pageRequest = PageRequest.of(page, size);
-
         Local local = new Local();
         local.setAtivo(ativo);
-        local.setNome(nome);
-
+        local.setNome(nome);        
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withIgnoreNullValues()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        
+
+        PageRequest pageRequest = PageRequest.of(page, size);        
         Example<Local> example = Example.of(local, exampleMatcher);
 
         return localRepository.findAll(example, pageRequest);

@@ -71,7 +71,6 @@ public class CategoriaService {
         categoria.setLocal(categoriaAtualizada.getLocal());
         categoria.setAtivo(categoriaAtualizada.getAtivo());
         
-        
         return categoriaRepository.save(categoria);
 
     }

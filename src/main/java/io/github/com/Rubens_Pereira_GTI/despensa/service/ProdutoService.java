@@ -1,5 +1,14 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
@@ -8,13 +17,7 @@ import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.UnidadeMedidaRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.validator.ProdutoValidator;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import jakarta.persistence.criteria.Predicate;
 
 @Service
 public class ProdutoService {
@@ -38,10 +41,12 @@ public class ProdutoService {
 
     public Produto salvarProduto(Produto produto){        
 
-        Categoria categoria = categoriaRepository.findById(produto.getCategoriaId()).orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+        Categoria categoria = categoriaRepository.findById(produto
+            .getCategoriaId()).orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
         produto.setCategoria(categoria);
         
-        UnidadeMedida unidadeMedida = unidadeMedidaRepository.findById(produto.getUnidadeMedidaId()).orElseThrow(() -> new EntityNotFoundException("Unidade de medida não encontrada"));
+        UnidadeMedida unidadeMedida = unidadeMedidaRepository.findById(produto
+            .getUnidadeMedidaId()).orElseThrow(() -> new EntityNotFoundException("Unidade de medida não encontrada"));
         produto.setUnidadeMedida(unidadeMedida);
         
         produtoValidator.validar(produto);
@@ -53,7 +58,6 @@ public class ProdutoService {
     @Transactional
     public Produto buscarProduto(Long id) {
         Optional<Produto> produtoOpt = produtoRepository.findById(id);
-        //TODO colocar o EntityNotFoundException na classe global
         if(produtoOpt.isEmpty()) throw new EntityNotFoundException("Produto não encontrado");
         
         Produto produto = produtoOpt.get();
@@ -63,10 +67,31 @@ public class ProdutoService {
         return produtoOpt.get();
     }
 
-    public Page<Produto> buscarTodos(Integer page, Integer size, String sort) {
-        Sort ordenacao = Sort.by(sort);
+    public Page<Produto> buscarTodos(Integer page, Integer size, String sort, Long localId, String nome, Boolean ativo) {
+        Specification<Produto> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Encadeamento: Produto -> Categoria -> Local
+            if (localId != null) {
+                predicates.add(cb.equal(root.join("categoria").join("local").get("id"), localId));
+            }
+
+            // Filtro por Nome (LIKE case-insensitive)
+            if (nome != null && !nome.isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("nome")), "%" + nome.toLowerCase() + "%"));
+            }
+
+            // Filtro por Ativo
+            if (ativo != null) {
+                predicates.add(cb.equal(root.get("ativo"), ativo));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Sort ordenacao = (sort != null && !sort.isBlank()) ? Sort.by(sort) : Sort.unsorted();
         PageRequest pageable = PageRequest.of(page, size, ordenacao);
-        return produtoRepository.findAll(pageable);
+        return produtoRepository.findAll(spec, pageable);
     }
 
     @Transactional

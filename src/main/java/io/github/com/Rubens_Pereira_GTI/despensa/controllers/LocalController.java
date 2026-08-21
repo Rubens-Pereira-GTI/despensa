@@ -59,7 +59,7 @@ public class LocalController {
             @RequestParam(defaultValue = "10") Integer size
 
     ) {
-        Page<Local> locais = localService.locaisFiltroados(ativo, nome, page, size);
+        Page<Local> locais = localService.pesquisaPaginada(ativo, nome, page, size);
         Page<LocalDTO> dtos = locais.map(localMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }

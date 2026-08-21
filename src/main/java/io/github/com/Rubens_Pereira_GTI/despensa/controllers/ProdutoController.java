@@ -54,12 +54,16 @@ public class ProdutoController {
     }
     
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> buscasTodos(@RequestParam(required = false, defaultValue = "0") Integer page, 
-                                                        @RequestParam(required = false, defaultValue = "10") Integer size,
-                                                        @RequestParam(required = false, defaultValue = "nome") String sort)
+    public ResponseEntity<Page<ProdutoResponse>> buscasTodos(@RequestParam(required = false, defaultValue = "0") Integer page, 
+                                                            @RequestParam(required = false, defaultValue = "10") Integer size,
+                                                            @RequestParam(required = false, defaultValue = "") String sort,
+                                                            @RequestParam(required = true, name = "local_id") Long localId,
+                                                            @RequestParam(required = false, defaultValue = "") String nome,
+                                                            @RequestParam(required = false, defaultValue = "true") Boolean ativo
+                                                        )
     {
-        Page<Produto> buscarTodos = produtoService.buscarTodos(page, size, sort);
-        List<ProdutoResponse> list = buscarTodos.stream().map(p -> produtoMapper.toProdutoResponse(p)).toList();
+        Page<Produto> buscarTodos = produtoService.buscarTodos(page, size, sort, localId, nome, ativo);
+        Page<ProdutoResponse> list = buscarTodos.map(p -> produtoMapper.toProdutoResponse(p));
 
         return ResponseEntity.ok(list);
     }

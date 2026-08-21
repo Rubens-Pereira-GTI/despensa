@@ -55,9 +55,10 @@ public class Produto {
 
     @Transient
     private Long unidadeMedidaId;
-
+    
     @Transient
     private Long localId;
+
 
     @Size(max = 255, message = "campo localizacao deve ter no máximo 255 caracteres")
     private String localizacao;
