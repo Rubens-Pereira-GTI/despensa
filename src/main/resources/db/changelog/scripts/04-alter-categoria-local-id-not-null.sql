@@ -1,0 +1,2 @@
+ALTER TABLE categoria ALTER COLUMN local_id SET NOT NULL;
+/

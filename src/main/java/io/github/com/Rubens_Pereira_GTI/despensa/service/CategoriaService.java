@@ -45,6 +45,10 @@ public class CategoriaService {
         if(categoriaOpt.isEmpty()){
            throw new EntityNotFoundException("Categoria não encontrada");
         }
+
+        Categoria categoria = categoriaOpt.get();
+        localRepository.findByCategoriasContaining(categoria).ifPresent(categoria::setLocal);
+
         return categoriaOpt.get();
     }
 
@@ -62,13 +66,18 @@ public class CategoriaService {
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         if (categoriaOpt.isEmpty()) throw new EntityNotFoundException("categoria não encontrada");
         
-        categoriaValidator.validar(categoriaAtualizada);
-
         Categoria categoria = categoriaOpt.get();
+
+        Optional<Local> localOptional = localRepository.findById(categoriaAtualizada.getLocalId());
+        if(localOptional.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
+        
+        categoriaAtualizada.setId(id);
+        categoriaValidator.validar(categoriaAtualizada);
+        
+        categoria.setLocal(localOptional.get());
         categoria.setNome(categoriaAtualizada.getNome());
         categoria.setDescricao(categoriaAtualizada.getDescricao());
         categoria.setLocalId(categoriaAtualizada.getLocalId());
-        categoria.setLocal(categoriaAtualizada.getLocal());
         categoria.setAtivo(categoriaAtualizada.getAtivo());
         
         return categoriaRepository.save(categoria);
@@ -105,6 +114,9 @@ public class CategoriaService {
         
         Optional<Local> localOpt = localRepository.findById(localId);
         if(localOpt.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
+
+        //localRepository.findByCategoriasContaining(categoriaOpt)
+
 
         Categoria categoriaFiltro = new Categoria();
         categoriaFiltro.setAtivo(ativo);

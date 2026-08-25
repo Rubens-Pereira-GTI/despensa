@@ -8,7 +8,7 @@ public record CategoriaResponseDto(
 
         String descricao,
 
-        LocalDTO localDTO,
+        LocalResumoDTO localResumoDTO,
 
         Boolean ativo
 ) {

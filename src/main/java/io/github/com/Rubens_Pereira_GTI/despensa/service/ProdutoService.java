@@ -22,7 +22,6 @@ import jakarta.persistence.criteria.Predicate;
 @Service
 public class ProdutoService {
 
-
     private final ProdutoRepository produtoRepository;
     private final UnidadeMedidaRepository unidadeMedidaRepository;
     private final CategoriaRepository categoriaRepository;

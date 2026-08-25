@@ -19,10 +19,7 @@ public record LocalDTO(
         String descricao,
 
         @NotNull(message = "campo obrigatorio")
-        Boolean ativo,
-
-        LocalDateTime dataCriacao,        
-        LocalDateTime dataAtualizacao
+        Boolean ativo
 ) {
     
 }

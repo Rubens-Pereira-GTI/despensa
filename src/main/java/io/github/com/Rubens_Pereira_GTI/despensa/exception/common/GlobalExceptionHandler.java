@@ -30,8 +30,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex){
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResponse handleNotFound(EntityNotFoundException ex){
+
+        return ErroResponse.naoEncontrado(ex.getMessage());
     }
 
     @ExceptionHandler
@@ -45,6 +47,7 @@ public class GlobalExceptionHandler {
         ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
         return ResponseEntity.status(erroResponse.status()).body(erroResponse);
     }
+
 
 
 

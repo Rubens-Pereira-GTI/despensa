@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.mapper;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResumoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +28,16 @@ public class LocalMapper {
                 entity.getId(),
                 entity.getNome(),
                 entity.getDescricao(),
-                entity.getAtivo(),
-                entity.getDataCriacao(),
-                entity.getDataAtualizacao()
+                entity.getAtivo()
+        );
+    }
+    public LocalResumoDTO toResumoDTO(Local entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new LocalResumoDTO(
+                entity.getId(),
+                entity.getNome()
         );
     }
 
