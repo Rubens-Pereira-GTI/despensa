@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,17 +39,20 @@ public class ProdutoService {
         this.produtoValidator = produtoValidator;
     }
 
-    public Produto salvarProduto(Produto produto){        
-
-        Categoria categoria = categoriaRepository.findById(produto
-            .getCategoriaId()).orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
-        produto.setCategoria(categoria);
-        
-        UnidadeMedida unidadeMedida = unidadeMedidaRepository.findById(produto
-            .getUnidadeMedidaId()).orElseThrow(() -> new EntityNotFoundException("Unidade de medida não encontrada"));
-        produto.setUnidadeMedida(unidadeMedida);
+    public Produto salvarProduto(Produto produto){   
         
         produtoValidator.validar(produto);
+
+        Categoria categoria = categoriaRepository.findById(produto.getCategoriaId())
+            .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+        produto.setCategoria(categoria);
+        
+        UnidadeMedida unidadeMedida = unidadeMedidaRepository.findById(produto.getUnidadeMedidaId())
+            .orElseThrow(() -> new EntityNotFoundException("Unidade de medida não encontrada"));
+        produto.setUnidadeMedida(unidadeMedida);
+
+        produto.setCategoria(categoria);
+        produto.setUnidadeMedida(unidadeMedida);        
         
         return produtoRepository.save(produto);
     }
@@ -56,17 +60,25 @@ public class ProdutoService {
 
     @Transactional
     public Produto buscarProduto(Long id) {
-        Optional<Produto> produtoOpt = produtoRepository.findById(id);
-        if(produtoOpt.isEmpty()) throw new EntityNotFoundException("Produto não encontrado");
+        Produto produto = produtoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
         
-        Produto produto = produtoOpt.get();
-        produto.setCategoriaId(produto.getCategoria().getId());
-        produto.setUnidadeMedidaId(produto.getUnidadeMedida().getId());
+        Categoria categoria = categoriaRepository.findByProdutosContaining(produto)
+            .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
-        return produtoOpt.get();
+        produto.setCategoriaId(categoria.getId());
+        produto.setCategoria(categoria);
+
+        return produto;
     }
 
-    public Page<Produto> buscarTodos(Integer page, Integer size, String sort, Long localId, String nome, Boolean ativo) {
+    public Page<Produto> buscarTodos(   Integer page, 
+                                        Integer size, 
+                                        String sort, 
+                                        Long localId, 
+                                        String nome, 
+                                        Boolean ativo) {
+
         Specification<Produto> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -90,6 +102,7 @@ public class ProdutoService {
 
         Sort ordenacao = (sort != null && !sort.isBlank()) ? Sort.by(sort) : Sort.unsorted();
         PageRequest pageable = PageRequest.of(page, size, ordenacao);
+
         return produtoRepository.findAll(spec, pageable);
     }
 

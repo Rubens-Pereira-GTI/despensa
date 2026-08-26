@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -33,9 +34,11 @@ public class Movimentacao {
     @Size(max = 255)
     private String motivo;
 
+    @NotNull(message = "campo data de criacao obrigatório")
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;
 
+    @NotNull(message = "campo data de movimentacao obrigatório")
     @Column(name = "data_movimentacao")
     private LocalDateTime dataMovimentacao;
 
@@ -45,7 +48,10 @@ public class Movimentacao {
         dataMovimentacao = LocalDateTime.now();
     }
 
-    //TODO
+    @PreUpdate
+    public void onUpdate(){
+        dataMovimentacao = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;

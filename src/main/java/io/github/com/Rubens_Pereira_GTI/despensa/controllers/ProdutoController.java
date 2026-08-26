@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,8 +32,11 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<Object> salvarProduto(@Valid @RequestBody ProdutoDTO dto){
 
+        //TODO fazer o mapper
         Produto produto = produtoMapper.toEntity(dto);
         produto = produtoService.salvarProduto(produto);
+
+        //TODO Fazer uma validação para verificar se o produto já existe antes de criar, se existir retornar um bad request
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -47,7 +48,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> buscarProduto(@PathVariable Long id){
+    public ResponseEntity<ProdutoResponse> buscar(@PathVariable Long id){
         Produto produto =produtoService.buscarProduto(id);
         ProdutoResponse produtoResponse = produtoMapper.toProdutoResponse(produto);
         return ResponseEntity.ok(produtoResponse);

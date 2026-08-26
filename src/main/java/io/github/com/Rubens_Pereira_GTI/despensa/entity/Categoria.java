@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "categoria")
@@ -22,8 +23,8 @@ public class Categoria {
     @Column
     private String descricao;
 
-    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
-    //private List<Produto> produtos;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria")
+    private List<Produto> produtos;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "local_id", nullable = false)

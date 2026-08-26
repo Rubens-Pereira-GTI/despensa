@@ -40,7 +40,7 @@ public class Produto {
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
     private List<Estoque> estoques;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
