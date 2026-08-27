@@ -65,4 +65,30 @@ public class EstoqueService {
         
     }
 
+    public void atualizar(EstoqueDTO dto, Long idEstoque){
+
+        Optional<Estoque> estoqueOpt = estoqueRepository.findById(idEstoque);
+
+        if(estoqueOpt.isEmpty()){
+            throw new EntityNotFoundException("Estoque não encontrado");
+        }
+
+        Optional<Produto> produtoOpt = produtoRepository.findById(dto.produtoId());
+
+        if(produtoOpt.isEmpty()){
+            throw new EntityNotFoundException("Produto não encontrado");
+        }
+
+        Estoque estoque = estoqueOpt.get();
+        estoque.setProduto(produtoOpt.get());
+        estoque.setQuantidade(dto.quantidade());
+        estoque.setQtdReservada(dto.qtdReservada());
+        estoque.setLocalizacao(dto.localizacao());
+        estoque.setDataValidade(dto.dataValidade());
+
+        estoqueRepository.save(estoque);
+    }
+        
+    
+
 }

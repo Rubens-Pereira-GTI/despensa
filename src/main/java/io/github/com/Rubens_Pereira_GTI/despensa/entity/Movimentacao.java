@@ -2,6 +2,8 @@ package io.github.com.Rubens_Pereira_GTI.despensa.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -14,32 +16,43 @@ public class Movimentacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "campo produto é obrigatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    @Enumerated
-    @Column(name = "tipo_movimentacao")
+    @Transient
+    private Long produtoId;
+
+    @NotNull(message = "campo tipo de movimentacao é obrigatorio")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_movimentacao", nullable = false)
     private TipoMovimentacao tipoMovimentacao;
 
-    @Column(precision = 10, scale = 2)
+    @NotNull(message = "campo quantidade é obrigatorio")
+    @Positive(message = "campo quantidade deve ser positivo")
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal quantidade;
 
-    @Column(name = "quantidade_anterior", precision = 10, scale = 2)
+    @NotNull(message = "campo quantidade anterior é obrigatorio")
+    @PositiveOrZero(message = "campo quantidade anterior deve ser positivo")
+    @Column(name = "quantidade_anterior", precision = 10, scale = 2, nullable = false)
     private BigDecimal qtdAnterior;
 
-    @Column(name = "quantidade_nova", precision = 10, scale = 2)
+    @NotNull(message = "campo quantidade nova é obrigatorio")
+    @PositiveOrZero(message = "campo quantidade nova deve ser positivo")
+    @Column(name = "quantidade_nova", precision = 10, scale = 2, nullable = false)
     private BigDecimal qtdNova;
 
     @Size(max = 255)
     private String motivo;
 
     @NotNull(message = "campo data de criacao obrigatório")
-    @Column(name = "data_criacao", updatable = false)
+    @Column(name = "data_criacao", updatable = false, nullable = false)
     private LocalDateTime dataCriacao;
 
     @NotNull(message = "campo data de movimentacao obrigatório")
-    @Column(name = "data_movimentacao")
+    @Column(name = "data_movimentacao", nullable = false)
     private LocalDateTime dataMovimentacao;
 
     @PrePersist

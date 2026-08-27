@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErroResponse> handleOperacaoNaoPermitidaException(OperacaoNaoPermitidaException ex){
         ErroResponse erroResponse = ErroResponse.conflito(ex.getMessage());
         return ResponseEntity.status(erroResponse.status()).body(erroResponse);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErroResponse handleErrosNaoTratados(RuntimeException ex) {
+        System.out.println(ex.getMessage());
+        return new ErroResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Ocorreu um erro inesperado",
+                List.of());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResponse handleRotaNaoEncontrada(NoResourceFoundException ex) {
+        return new ErroResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "A rota solicitada não existe.",
+                List.of()
+        );
     }
 
 
