@@ -2,6 +2,7 @@ package io.github.com.Rubens_Pereira_GTI.despensa.mapper;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResponse;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.ProdutoResumoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 
 
@@ -67,6 +68,14 @@ public class ProdutoMapper {
             categoriaMapper.toResumoDTO(produto.getCategoria()),
             unidadeMedidaMapper.toDTO(produto.getUnidadeMedida()),
             produto.getLocalizacao()
+        );
+    }
+
+    public ProdutoResumoDTO toResumoDTO(Produto produto){
+        
+        return new ProdutoResumoDTO(
+            produto.getId(),
+            produto.getNome()
         );
     }
 }

@@ -1,34 +1,65 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
+import io.github.com.Rubens_Pereira_GTI.despensa.mapper.EstoqueMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.EstoqueService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/estoques")
 public class EstoqueController {
 
     private final EstoqueService estoqueService;
+    private final EstoqueMapper estoqueMapper;
 
-    public EstoqueController(EstoqueService estoqueService){
+    public EstoqueController(EstoqueService estoqueService, EstoqueMapper estoqueMapper){
         this.estoqueService = estoqueService;
+        this.estoqueMapper = estoqueMapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EstoqueDTO> buscarEstoque(@PathVariable Long id){
-        Optional<Estoque> estoqueOpt = estoqueService.findEstoque(id);
-        if(estoqueOpt.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping
+    public ResponseEntity<Void> salvar(@RequestBody EstoqueDTO dto) {
+        
+        Estoque estoque = estoqueMapper.toEstoque(dto);
 
-        EstoqueDTO dto = EstoqueDTO.toDTO(estoqueOpt.get());
+
+        estoqueService.salvar(estoque);
+
+        return ResponseEntity.accepted().build();
+    }
+    
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EstoqueDTO> buscarPorId(@PathVariable Long id){
+        Estoque estoque = estoqueService.buscarPorId(id);
+        
+
+        EstoqueDTO dto = estoqueMapper.toDTO(estoque);
 
         return ResponseEntity.ok(dto);
     }
 
-    //public ResponseEntity<Void>
+    @GetMapping
+    public ResponseEntity<Page<EstoqueResponseDTO>> listarEstoque(
+        @RequestParam (required = false, defaultValue = "0") Integer page, 
+        @RequestParam (required = false, defaultValue = "10") Integer size){
+
+            Page<Estoque> estoques = estoqueService.buscaPaginada(page, size);
+
+            Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
+
+            return ResponseEntity.ok(dto);
+        }
+
+
+        
+
+        
+        
+
 }

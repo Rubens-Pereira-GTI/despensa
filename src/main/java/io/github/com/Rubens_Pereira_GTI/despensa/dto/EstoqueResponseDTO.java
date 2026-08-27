@@ -1,16 +1,13 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-public record EstoqueDTO(
+public record EstoqueResponseDTO(
         Long id,
-        Long produtoId,
+        ProdutoResumoDTO nomeProduto,
         BigDecimal quantidade,
         BigDecimal qtdReservada,
-        String localizacao,
-        LocalDate dataValidade
+        String localizacao
 ) {
-
-   
+    
 }

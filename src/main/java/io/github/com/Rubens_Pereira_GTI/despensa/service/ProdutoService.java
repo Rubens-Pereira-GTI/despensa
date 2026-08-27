@@ -1,6 +1,5 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
-import io.github.com.Rubens_Pereira_GTI.despensa.repository.LocalRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Categoria;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.UnidadeMedida;
@@ -39,6 +39,7 @@ public class ProdutoService {
         this.produtoValidator = produtoValidator;
     }
 
+    @Transactional
     public Produto salvarProduto(Produto produto){   
         
         produtoValidator.validar(produto);
@@ -57,8 +58,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-
-    @Transactional
+    @Transactional(readOnly = true)
     public Produto buscarProduto(Long id) {
         Produto produto = produtoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
@@ -72,6 +72,7 @@ public class ProdutoService {
         return produto;
     }
 
+    @Transactional(readOnly = true)
     public Page<Produto> buscarTodos(   Integer page, 
                                         Integer size, 
                                         String sort, 
@@ -127,6 +128,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+    @Transactional
     public void deletar(Produto produto) {
         if(!produtoRepository.existsById(produto.getId())){
             throw new EntityNotFoundException("Produto não encontrado");
