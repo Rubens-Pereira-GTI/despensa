@@ -1,6 +1,7 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalDTO;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResumoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.LocalMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.LocalService;
@@ -13,6 +14,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -51,9 +55,9 @@ public class LocalController {
         return ResponseEntity.ok(localDTO);
     }
 
-    @GetMapping
+    @GetMapping("/consulta")
     public ResponseEntity<Page<LocalDTO>> locaisFiltroados(
-            @RequestParam(required = true) Boolean ativo, 
+            @RequestParam(required = true, defaultValue = "true") Boolean ativo, 
             @RequestParam(required = false) String nome,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
@@ -63,6 +67,13 @@ public class LocalController {
         Page<LocalDTO> dtos = locais.map(localMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping
+    public ResponseEntity<List<LocalResumoDTO>> buscaResumida() {        
+        List<LocalResumoDTO> buscaResumida = localService.buscaResumida();        
+        return ResponseEntity.ok(buscaResumida);
+    }
+    
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletar(@PathVariable Long id) {

@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.LocalResumoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Local;
 import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.CategoriaRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -85,6 +87,11 @@ public class LocalService {
         }
 
         local.setAtivo(false);
+    }
+
+    public List<LocalResumoDTO> buscaResumida(){
+        return localRepository.findAllResumoByAtivoTrue();
+
     }
 
 

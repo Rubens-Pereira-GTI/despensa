@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "movimentacao")
 public class Movimentacao {
 
     @Id
@@ -24,6 +25,7 @@ public class Movimentacao {
     @Transient
     private Long produtoId;
 
+    //TODO no Banco tipo_movimentação não tem constraints, fazer isso depois.
     @NotNull(message = "campo tipo de movimentacao é obrigatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_movimentacao", nullable = false)

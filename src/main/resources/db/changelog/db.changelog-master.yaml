@@ -59,3 +59,15 @@ databaseChangeLog:
           relativeToChangelogFile: true
           splitStatements: true
           stripComments: true
+- changeSet:
+      id: 05-cria-tabela-movimentacao
+      author: Rubens Pereira
+      changes:
+      - sqlFile:
+          dbms: postgresql
+          encoding: utf8
+          endDelimiter: \n/\s*\n|\n/\s*$
+          path: scripts/05-cria-tabela-movimentacao.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
