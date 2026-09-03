@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueAtualizacaoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
@@ -40,20 +41,23 @@ public class EstoqueController {
         return ResponseEntity.ok(dto);
     }
 
+    //TODO estoque precisa ser listado por local
     @GetMapping
     public ResponseEntity<Page<EstoqueResponseDTO>> listarEstoque(
-        @RequestParam (required = false, defaultValue = "0") Integer page, 
-        @RequestParam (required = false, defaultValue = "10") Integer size){
-            Page<Estoque> estoques = estoqueService.buscaPaginada(page, size);
-            Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
-            return ResponseEntity.ok(dto);
-        }
+                                                    @RequestParam (required = false, defaultValue = "0") Integer page, 
+                                                    @RequestParam (required = false, defaultValue = "10") Integer size,
+                                                    @RequestParam (required = true) Long localId
+    ){
+        Page<Estoque> estoques = estoqueService.buscaPaginada(page, size, localId);
+        Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
+        return ResponseEntity.ok(dto);
+    }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(
                                         @PathVariable Long id, 
-                                        @RequestBody EstoqueDTO dto) {
+                                        @RequestBody EstoqueAtualizacaoDTO dto) {
         
         estoqueService.atualizar(dto, id);        
         return ResponseEntity.accepted().build();

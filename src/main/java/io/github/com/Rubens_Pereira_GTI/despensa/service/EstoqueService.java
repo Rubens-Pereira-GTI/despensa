@@ -1,5 +1,6 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueAtualizacaoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
@@ -27,15 +28,14 @@ public class EstoqueService {
     }
 
 
+    @Transactional
     public Estoque salvar(Estoque estoque){
-
-        Optional<Produto> produtoOpt = produtoRepository.findById(estoque.getProdutoId());
-        
+        //verifica se o produto existe
+        Optional<Produto> produtoOpt = produtoRepository.findById(estoque.getProdutoId());        
         if(produtoOpt.isEmpty()){
             throw new EntityNotFoundException("Produto não encontrado");
         }
-        
-        
+    
         estoque.setProduto(produtoOpt.get());
         return estoqueRepository.save(estoque);
     }
@@ -46,26 +46,21 @@ public class EstoqueService {
         Optional<Estoque> estoqueOpt = estoqueRepository.findById(id);
         if(estoqueOpt.isEmpty()){
             throw new EntityNotFoundException("Estoque não encontrado");
-        }
-
-        Produto produto = produtoRepository.findByEstoquesContaining(estoqueOpt.get())
-            .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
-
-        Estoque estoque = estoqueOpt.get();
-        estoque.setProduto(produto);
-        
-        return estoque;
+        }               
+        return estoqueOpt.get();
     }
 
-    public Page<Estoque> buscaPaginada(Integer page, Integer size){
-
+    //TODO essa busca precisa ser filtrado por local
+    @Transactional(readOnly = true)
+    public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId){
         PageRequest pageRequest = PageRequest.of(page, size);
-
         return estoqueRepository.findAll(pageRequest);
         
     }
 
-    public void atualizar(EstoqueDTO dto, Long idEstoque){
+
+    @Transactional
+    public void atualizar(EstoqueAtualizacaoDTO dto, Long idEstoque){
 
         Optional<Estoque> estoqueOpt = estoqueRepository.findById(idEstoque);
 
@@ -73,22 +68,13 @@ public class EstoqueService {
             throw new EntityNotFoundException("Estoque não encontrado");
         }
 
-        Optional<Produto> produtoOpt = produtoRepository.findById(dto.produtoId());
-
-        if(produtoOpt.isEmpty()){
-            throw new EntityNotFoundException("Produto não encontrado");
-        }
-
-        Estoque estoque = estoqueOpt.get();
-        estoque.setProduto(produtoOpt.get());
-        estoque.setQuantidade(dto.quantidade());
-        estoque.setQtdReservada(dto.qtdReservada());
+        Estoque estoque = estoqueOpt.get();        
         estoque.setLocalizacao(dto.localizacao());
         estoque.setDataValidade(dto.dataValidade());
-
         estoqueRepository.save(estoque);
     }
-        
+
     
+        
 
 }

@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import io.github.com.Rubens_Pereira_GTI.despensa.exception.OperacaoNaoPermitidaException;
+
 @Entity
 @Table(name = "estoque")
 public class Estoque {
@@ -140,5 +142,26 @@ public class Estoque {
 
     public void setNomeProduto(String nomeProduto) {
         this.nomeProduto = nomeProduto;
+    }
+
+    //Regras de negocio - Rich domain model
+
+    public void registrarSaida(BigDecimal qtd){
+        //1. valida veio com algum valor ou se ele é menor que zero
+        if (qtd == null || qtd.compareTo(BigDecimal.ZERO) <= 0){
+            throw new OperacaoNaoPermitidaException("o valor não pode ser menor que zero");
+        }
+        //2. valida se o estoque não ficara negativo apos a subtração
+        if (this.quantidade.compareTo(qtd) < 0){
+            throw new OperacaoNaoPermitidaException("O valor passado é menor que a quantidade disponivel no estoque");
+        }
+        this.quantidade = this.quantidade.subtract(qtd);
+    }
+
+    public void registrarEntrada(BigDecimal qtd){
+        if (qtd == null || qtd.compareTo(BigDecimal.ZERO) <= 0){
+            throw new OperacaoNaoPermitidaException("a quantidade deve ser maior que zero");
+        }
+        this.quantidade = quantidade.add(qtd);
     }
 }
