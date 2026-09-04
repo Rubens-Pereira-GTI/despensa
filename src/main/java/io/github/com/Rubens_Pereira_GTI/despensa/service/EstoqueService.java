@@ -1,20 +1,16 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.service;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueAtualizacaoDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.EstoqueRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service

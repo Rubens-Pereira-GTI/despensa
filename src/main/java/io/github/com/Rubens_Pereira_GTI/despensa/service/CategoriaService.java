@@ -115,9 +115,6 @@ public class CategoriaService {
         Optional<Local> localOpt = localRepository.findById(localId);
         if(localOpt.isEmpty()) throw new EntityNotFoundException("Local não encontrado");
 
-        //localRepository.findByCategoriasContaining(categoriaOpt)
-
-
         Categoria categoriaFiltro = new Categoria();
         categoriaFiltro.setAtivo(ativo);
         categoriaFiltro.setLocal(localOpt.get());

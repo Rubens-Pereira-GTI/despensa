@@ -6,6 +6,8 @@ import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.EstoqueMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.EstoqueService;
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,7 @@ public class EstoqueController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody EstoqueDTO dto) {        
+    public ResponseEntity<Void> salvar(@Valid @RequestBody EstoqueDTO dto) {        
         Estoque estoque = estoqueMapper.toEstoque(dto);
         estoqueService.salvar(estoque);
         return ResponseEntity.accepted().build();
