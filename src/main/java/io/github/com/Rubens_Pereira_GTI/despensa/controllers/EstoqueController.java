@@ -46,9 +46,11 @@ public class EstoqueController {
     public ResponseEntity<Page<EstoqueResponseDTO>> listarEstoque(
                                                     @RequestParam (required = false, defaultValue = "0") Integer page, 
                                                     @RequestParam (required = false, defaultValue = "10") Integer size,
-                                                    @RequestParam (required = true) Long localId
+                                                    @RequestParam (required = true) Long localId,
+                                                    @RequestParam (required = false, defaultValue = "dataAtualizacao") String sort,
+                                                    @RequestParam (required = false, defaultValue = "DESC") String direction
     ){
-        Page<Estoque> estoques = estoqueService.buscaPaginada(page, size, localId);
+        Page<Estoque> estoques = estoqueService.buscaPaginada(page, size, localId, sort, direction);
         Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
         return ResponseEntity.ok(dto);
     }

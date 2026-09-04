@@ -24,9 +24,6 @@ public record ProdutoDTO(
         @NotNull(message = "campo categoria obrigatório")
         Long categoriaId,
         
-        @NotNull(message = "campo local obrigatório")
-        Long localId,
-
         @NotNull(message = "campo unidade de medida obrigatório")
         Long unidadeMedidaId,
 

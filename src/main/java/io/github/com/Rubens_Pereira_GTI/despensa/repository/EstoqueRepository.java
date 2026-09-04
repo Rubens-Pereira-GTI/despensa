@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
+public interface EstoqueRepository extends JpaRepository<Estoque, Long>{
 
     @EntityGraph(attributePaths = { "produto" })
     @Override
@@ -15,5 +15,9 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
 
     @EntityGraph(attributePaths = {"produto"})
     Optional<Estoque> findById( Long id);
+
+    @EntityGraph(attributePaths = {"produto.categoria.local"})
+    Page<Estoque> findByProduto_Categoria_Local_Id(Long localId, Pageable pageable);
+
 
 }

@@ -32,7 +32,6 @@ public class ProdutoMapper {
             produto.setAtivo(dto.ativo());
         }
         produto.setCategoriaId(dto.categoriaId());
-        produto.setLocalId(dto.localId());
         produto.setUnidadeMedidaId(dto.unidadeMedidaId());
         produto.setLocalizacao(dto.localizacao());
 
@@ -51,7 +50,6 @@ public class ProdutoMapper {
                 entity.getEstoqueMinimo(),
                 entity.isAtivo(),
                 entity.getCategoriaId(),
-                entity.getLocalId(),
                 entity.getUnidadeMedidaId(),
                 entity.getLocalizacao()
         );

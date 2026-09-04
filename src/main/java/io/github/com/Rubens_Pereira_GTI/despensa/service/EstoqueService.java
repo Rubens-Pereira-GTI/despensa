@@ -10,9 +10,11 @@ import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -50,11 +52,20 @@ public class EstoqueService {
         return estoqueOpt.get();
     }
 
-    //TODO essa busca precisa ser filtrado por local
+    //TODO essa busca precisa ser filtrado por local e precisa poder ser filtado pela data de modificação
     @Transactional(readOnly = true)
-    public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId){
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return estoqueRepository.findAll(pageRequest);
+    public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId, String sort, String direction){
+
+        
+        // Direção padrão: DESC (mais recentes primeiro)
+        Sort.Direction direcao = (direction != null && direction.equalsIgnoreCase("ASC")) 
+            ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direcao, sort));
+
+        return estoqueRepository.findByProduto_Categoria_Local_Id(localId, pageRequest);
+        
         
     }
 
