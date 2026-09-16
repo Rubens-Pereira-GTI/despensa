@@ -19,25 +19,38 @@ public class EstoqueService {
     private final ProdutoRepository produtoRepository;
     private final EstoqueRepository estoqueRepository;
     
-
     public EstoqueService(EstoqueRepository estoqueRepository, ProdutoRepository produtoRepository){
         this.estoqueRepository = estoqueRepository;
         this.produtoRepository = produtoRepository;
     }
 
-
+    //TODO retirar metodo
     @Transactional
-    public Estoque salvar(Estoque estoque){
-        //verifica se o produto existe
-        Optional<Produto> produtoOpt = produtoRepository.findById(estoque.getProdutoId());        
+    public void salvar(Estoque estoqueAtualizado){
+        //TODO fazer soma do estoque através de uma movimentação
+        //TODO validar se produto e local já existe no estoque
+
+        Optional<Produto> produtoOpt = produtoRepository.findById(estoqueAtualizado.getProdutoId());        
         if(produtoOpt.isEmpty()){
             throw new EntityNotFoundException("Produto não encontrado");
         }
-    
-        estoque.setProduto(produtoOpt.get());
-        return estoqueRepository.save(estoque);
-    }
 
+        Optional<Estoque> estoqueOpt = estoqueRepository.findByProduto_Id(estoqueAtualizado.getProdutoId());
+
+        if(estoqueOpt.isEmpty()){
+            estoqueRepository.save(estoqueAtualizado);
+        }
+        
+        Estoque estoque = estoqueOpt.get();
+        estoque.setDataValidade(estoqueAtualizado.getDataValidade());
+        estoque.setLocalizacao(estoqueAtualizado.getLocalizacao());
+        estoque.setQtdReservada(estoqueAtualizado.getQtdReservada());
+        // o metodo add ja faz a soma  com o bigdecimal.
+        estoque.setQuantidade(estoqueAtualizado.getQuantidade());
+        estoque.setProduto(produtoOpt.get());
+        
+        estoqueRepository.save(estoque);
+    }
 
     @Transactional(readOnly = true)
     public Estoque buscarPorId(Long id) {
@@ -48,21 +61,15 @@ public class EstoqueService {
         return estoqueOpt.get();
     }
 
-    //TODO essa busca precisa ser filtrado por local e precisa poder ser filtado pela data de modificação
     @Transactional(readOnly = true)
     public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId, String sort, String direction){
 
-        
-        // Direção padrão: DESC (mais recentes primeiro)
         Sort.Direction direcao = (direction != null && direction.equalsIgnoreCase("ASC")) 
             ? Sort.Direction.ASC : Sort.Direction.DESC;
-
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direcao, sort));
 
         return estoqueRepository.findByProduto_Categoria_Local_Id(localId, pageRequest);
-        
-        
     }
 
 

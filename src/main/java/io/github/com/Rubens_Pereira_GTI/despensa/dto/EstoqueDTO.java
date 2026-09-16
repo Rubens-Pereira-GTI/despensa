@@ -16,7 +16,7 @@ public record EstoqueDTO(
         Long produtoId,
 
         @NotNull(message = "Quantidade é obrigatória")
-        @Positive ( message = "Quantidade deve ser maior que 0")
+        @Positive(message = "Quantidade deve ser maior ou igual a 0")
         BigDecimal quantidade,
 
         @PositiveOrZero(message = "Quantidade reservada deve ser maior ou igual a 0")

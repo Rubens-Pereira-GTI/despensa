@@ -158,10 +158,12 @@ public class Estoque {
         this.quantidade = this.quantidade.subtract(qtd);
     }
 
-    public void registrarEntrada(BigDecimal qtd){
+    public BigDecimal registrarEntrada(BigDecimal qtd){
         if (qtd == null || qtd.compareTo(BigDecimal.ZERO) <= 0){
             throw new OperacaoNaoPermitidaException("a quantidade deve ser maior que zero");
         }
+        //TODO ver como será a logica da qtdReservada
         this.quantidade = quantidade.add(qtd);
+        return quantidade;
     }
 }

@@ -16,8 +16,9 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long>{
     @EntityGraph(attributePaths = {"produto"})
     Optional<Estoque> findById( Long id);
 
-    @EntityGraph(attributePaths = {"produto.categoria.local"})
+    @EntityGraph(attributePaths = {"produto"}, type = EntityGraph.EntityGraphType.LOAD)
     Page<Estoque> findByProduto_Categoria_Local_Id(Long localId, Pageable pageable);
 
-
+    @EntityGraph(attributePaths = {"produto"}, type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Estoque> findByProduto_Id(Long id);
 }

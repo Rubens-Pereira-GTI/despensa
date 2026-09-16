@@ -3,14 +3,10 @@ package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.MovimentacaoMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.MovimentacaoDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.MovimentacaoHistoricoResponse;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Movimentacao;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.MovimentacaoService;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +30,7 @@ public class MovimentacaoController {
 
     @PostMapping
     public ResponseEntity<Void> movimentar(@RequestBody MovimentacaoDTO dto){
-        Movimentacao movimentacao = movimentacaoMapper.toEntity(dto);
-        movimentacaoService.movimentar(movimentacao);
+        movimentacaoService.movimentar(dto);
         return ResponseEntity.accepted().build();
     }
 

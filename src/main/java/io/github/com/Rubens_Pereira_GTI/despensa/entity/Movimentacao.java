@@ -57,6 +57,24 @@ public class Movimentacao {
     @Column(name = "data_movimentacao", nullable = false)
     private LocalDateTime dataMovimentacao;
 
+    public static Movimentacao criar(Produto produto, 
+                                    TipoMovimentacao tipo, 
+                                    BigDecimal qtdMovimentada, 
+                                    BigDecimal saldoAnterior, 
+                                    BigDecimal saldoNovo, 
+                                    String motivo) {
+
+        Movimentacao mov = new Movimentacao();
+        mov.setProduto(produto);
+        mov.setTipoMovimentacao(tipo);
+        mov.setQuantidade(qtdMovimentada);
+        mov.setQtdAnterior(saldoAnterior);
+        mov.setQtdNova(saldoNovo);
+        mov.setMotivo(motivo);
+    return mov;
+}
+
+
     @PrePersist
     public void onCreate(){
         dataCriacao = LocalDateTime.now();
@@ -139,4 +157,6 @@ public class Movimentacao {
     public void setDataMovimentacao(LocalDateTime dataMovimentacao) {
         this.dataMovimentacao = dataMovimentacao;
     }
+
+    
 }

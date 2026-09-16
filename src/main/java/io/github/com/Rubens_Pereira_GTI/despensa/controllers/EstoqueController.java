@@ -29,6 +29,7 @@ public class EstoqueController {
         this.estoqueMapper = estoqueMapper;
     }
 
+    //TODO retirar metodo
     @PostMapping
     public ResponseEntity<Void> salvar(@Valid @RequestBody EstoqueDTO dto) {        
         Estoque estoque = estoqueMapper.toEstoque(dto);
@@ -56,7 +57,6 @@ public class EstoqueController {
         Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
         return ResponseEntity.ok(dto);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(
