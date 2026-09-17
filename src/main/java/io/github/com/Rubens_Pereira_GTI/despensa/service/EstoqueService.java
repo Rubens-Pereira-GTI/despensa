@@ -6,11 +6,17 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.Produto;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.EstoqueRepository;
 import io.github.com.Rubens_Pereira_GTI.despensa.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Predicate;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,14 +68,39 @@ public class EstoqueService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId, String sort, String direction){
+    public Page<Estoque> buscaPaginada(Integer page, Integer size, Long localId, String sort, String direction, String nome){
 
         Sort.Direction direcao = (direction != null && direction.equalsIgnoreCase("ASC")) 
             ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direcao, sort));
 
-        return estoqueRepository.findByProduto_Categoria_Local_Id(localId, pageRequest);
+        Specification<Estoque> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Filtro por local: Estoque -> Produto -> Categoria -> Local -> id
+            if (localId != null) {
+                predicates.add(cb.equal(
+                    root.join("produto")
+                        .join("categoria")
+                        .join("local")
+                        .get("id"),
+                    localId
+                ));
+            }
+
+            // Filtro por nome do produto (LIKE case-insensitive)
+            if (nome != null && !nome.isBlank()) {
+                predicates.add(cb.like(
+                    cb.lower(root.join("produto").get("nome")),
+                    "%" + nome.toLowerCase() + "%"
+                ));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return estoqueRepository.findAll(spec, pageRequest);
     }
 
 

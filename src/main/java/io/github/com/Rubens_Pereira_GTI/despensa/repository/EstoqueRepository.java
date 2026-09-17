@@ -4,14 +4,20 @@ import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface EstoqueRepository extends JpaRepository<Estoque, Long>{
+public interface EstoqueRepository extends JpaRepository<Estoque, Long>, JpaSpecificationExecutor<Estoque> {
 
     @EntityGraph(attributePaths = { "produto" })
     @Override
     Page<Estoque> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = { "produto" })
+    @Override
+    Page<Estoque> findAll(Specification<Estoque> spec, Pageable pageable);
 
     @EntityGraph(attributePaths = {"produto"})
     Optional<Estoque> findById( Long id);
@@ -21,4 +27,5 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long>{
 
     @EntityGraph(attributePaths = {"produto"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<Estoque> findByProduto_Id(Long id);
+
 }

@@ -4,9 +4,11 @@ import io.github.com.Rubens_Pereira_GTI.despensa.mapper.MovimentacaoMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.MovimentacaoDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.MovimentacaoHistoricoResponse;
+import io.github.com.Rubens_Pereira_GTI.despensa.dto.MovimentacaoResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Movimentacao;
+import io.github.com.Rubens_Pereira_GTI.despensa.entity.TipoMovimentacao;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.MovimentacaoService;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,21 +36,20 @@ public class MovimentacaoController {
         return ResponseEntity.accepted().build();
     }
 
-    //TODO Testar
-    //precisa retornar uma lista de produtos a sigla da unidade de medida 
-    //tem que ser uma lista de produtos associada aquele local
     @GetMapping
-    public ResponseEntity<Page<MovimentacaoHistoricoResponse>> buscarHistorico(
-        @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam(defaultValue = "10", required = false) Integer size,
-        @RequestParam(defaultValue = "id", required = false) String orderBy,
-        @RequestParam(defaultValue = "desc", required = false) String direction,
-        @RequestParam(required = false) Long localId) {
+    public ResponseEntity<Page<MovimentacaoResponseDTO>> buscarMovimetacoes(@RequestParam Integer pageNumber, 
+                                                    @RequestParam Integer pageSize,
+                                                    @RequestParam Long localId,
+                                                    @RequestParam LocalDateTime dataMovimentacao,
+                                                    @RequestParam TipoMovimentacao tipoMovimentacao                                                
+                                                ) {
 
-        Page<MovimentacaoHistoricoResponse> buscaFiltrada = movimentacaoService.buscaFiltrada(page, size, orderBy, direction, localId);
+        Page<Movimentacao> page = movimentacaoService.buscarMovimetacoes(pageNumber, pageSize, localId, dataMovimentacao, tipoMovimentacao);
+        Page<MovimentacaoResponseDTO> map = page.map(mov -> movimentacaoMapper.tResponseDTO(mov));
 
-        return ResponseEntity.ok(buscaFiltrada);
+        return ResponseEntity.ok(map);
     }
+    
     
 
 

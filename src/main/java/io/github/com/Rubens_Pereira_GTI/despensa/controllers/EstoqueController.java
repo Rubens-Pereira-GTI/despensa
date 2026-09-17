@@ -1,13 +1,10 @@
 package io.github.com.Rubens_Pereira_GTI.despensa.controllers;
 
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueAtualizacaoDTO;
-import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.dto.EstoqueResponseDTO;
 import io.github.com.Rubens_Pereira_GTI.despensa.entity.Estoque;
 import io.github.com.Rubens_Pereira_GTI.despensa.mapper.EstoqueMapper;
 import io.github.com.Rubens_Pereira_GTI.despensa.service.EstoqueService;
-import jakarta.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +25,6 @@ public class EstoqueController {
         this.estoqueService = estoqueService;
         this.estoqueMapper = estoqueMapper;
     }
-
-    //TODO retirar metodo
-    @PostMapping
-    public ResponseEntity<Void> salvar(@Valid @RequestBody EstoqueDTO dto) {        
-        Estoque estoque = estoqueMapper.toEstoque(dto);
-        estoqueService.salvar(estoque);
-        return ResponseEntity.accepted().build();
-    }
     
     @GetMapping("/{id}")
     public ResponseEntity<EstoqueResponseDTO> buscarPorId(@PathVariable Long id){
@@ -44,16 +33,16 @@ public class EstoqueController {
         return ResponseEntity.ok(dto);
     }
 
-    //TODO estoque precisa ser listado por local
     @GetMapping
     public ResponseEntity<Page<EstoqueResponseDTO>> listarEstoque(
                                                     @RequestParam (required = false, defaultValue = "0") Integer page, 
                                                     @RequestParam (required = false, defaultValue = "10") Integer size,
                                                     @RequestParam (required = true) Long localId,
                                                     @RequestParam (required = false, defaultValue = "dataAtualizacao") String sort,
-                                                    @RequestParam (required = false, defaultValue = "DESC") String direction
+                                                    @RequestParam (required = false, defaultValue = "DESC") String direction,
+                                                    @RequestParam (required = false) String nomeProduto
     ){
-        Page<Estoque> estoques = estoqueService.buscaPaginada(page, size, localId, sort, direction);
+        Page<Estoque> estoques = estoqueService.buscaPaginada(page, size, localId, sort, direction, nomeProduto);
         Page<EstoqueResponseDTO> dto = estoques.map(estoqueMapper::toResponseDTO);
         return ResponseEntity.ok(dto);
     }
